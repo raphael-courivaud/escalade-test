@@ -128,7 +128,8 @@
 
 	<script src="/static/js/socket.io.js"></script>
 	<script>
-		var socket = io('http://192.168.1.18:8887');
+        var HOST = location.origin.replace(/^http/, 'ws');
+		var socket = io(HOST);
 		socket.on('users', function(users) {
             var list = $('#college-fille tbody');
             list.empty();
