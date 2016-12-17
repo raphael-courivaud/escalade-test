@@ -2,26 +2,28 @@
   "name": "escalade-test",
   "version": "0.0.1",
   "description": "A sample Node.js app using Express 4",
-  "engines": {
-    "node": "5.9.1"
-  },
   "main": "index.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "ejs": "2.4.1",
-    "express": "4.13.3"
+    "express": "4.14.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/raphael-courivaud/escalade-test.git"
+    "url": "git+https://github.com/raphael-courivaud/escalade-test.git"
   },
   "keywords": [
     "node",
     "heroku",
     "express"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/raphael-courivaud/escalade-test/issues"
+  },
+  "homepage": "https://github.com/raphael-courivaud/escalade-test#readme",
+  "devDependencies": {},
+  "author": "Raphaël C"
 }
-
