@@ -1,7 +1,9 @@
 var express = require('express')
+  , app = express()
+  , server = require('http').createServer(app)
+  , io = require('socket.io')(server)
   , passport = require('passport')
-  , BasicStrategy = require('passport-http').BasicStrategy
-  , io = require('socket.io').listen(server);
+  , BasicStrategy = require('passport-http').BasicStrategy;
 
 // Use the BasicStrategy within Passport.
 //   Strategies in Passport require a `verify` function, which accept
@@ -15,16 +17,23 @@ passport.use(new BasicStrategy({},
 ));
 
 var app = express();
+var server = require('http').createServer(app);  
+var io = require('socket.io')(server);
 
 app.use(passport.initialize());
 // comment/remove this line below to disable auth
 app.use(passport.authenticate('basic', { session: false }));
-app.use('/static', express.static(__dirname + '/public'));;
+app.use('/static', express.static(__dirname + '/static'));;
 
 
 var port = Number(process.env.PORT || 5000);
-app.listen(port, function() {
+
+server.listen(port, function() {
   console.log("Listening on " + port);
+});
+
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/index.html');
 });
 
 var db_users = [
@@ -50,10 +59,6 @@ var db_users = [
     bestTime: '01:10:22',
   }
 ];
-
-app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/index.html');
-});
 
 //Socket.io emits this event when a connection is made.
 io.sockets.on('connection', function (socket) {
