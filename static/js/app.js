@@ -120,3 +120,36 @@ $('#add-button').click(function () {
         bestTime:bestTime
         });
 })
+
+// admin
+var users = [];
+loadUsers();
+function loadUsers(type)  {
+    $.ajax({
+        url: '/admin/users',
+        success: function(data){
+            users = data;
+        }
+    });
+};
+
+$('#category-picker').change(function(){
+    if(!$(this).val()) {
+        return;
+    }
+    $('#user-picker').empty();
+    $('#user-picker').append($("<option></option>").attr("value", '').text(''));
+    users[$(this).val()].forEach(function(user) {
+        $('#user-picker').append($("<option></option>").attr("value", user.id).attr("data-subtext", user.club).text(user.firstName + ' ' + user.lastName));
+    });
+    $('#user-picker').selectpicker('refresh');
+});
+
+(function ($) {
+  $('.spinner .btn:first-of-type').on('click', function() {
+    $('.spinner input').val( parseInt($('.spinner input').val(), 10) + 1);
+  });
+  $('.spinner .btn:last-of-type').on('click', function() {
+    $('.spinner input').val( parseInt($('.spinner input').val(), 10) - 1);
+  });
+})(jQuery);

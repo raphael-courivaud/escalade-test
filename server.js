@@ -40,6 +40,19 @@ app.get('/admin', function (req, res) {
   res.sendFile(__dirname + '/templates/admin.html');
 });
 
+app.get('/admin', function (req, res) {
+  res.sendFile(__dirname + '/templates/admin.html');
+});
+
+app.get('/admin', function (req, res) {
+  res.sendFile(__dirname + '/templates/admin.html');
+});
+
+app.get('/admin/users', function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(db_users));
+});
+
 var db_users = {
   collegeWomen: [
     {
