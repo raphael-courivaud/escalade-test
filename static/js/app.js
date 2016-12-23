@@ -145,11 +145,28 @@ $('#category-picker').change(function(){
     $('#user-picker').selectpicker('refresh');
 });
 
-(function ($) {
-  $('.spinner .btn:first-of-type').on('click', function() {
-    $('.spinner input').val( parseInt($('.spinner input').val(), 10) + 1);
-  });
-  $('.spinner .btn:last-of-type').on('click', function() {
-    $('.spinner input').val( parseInt($('.spinner input').val(), 10) - 1);
-  });
-})(jQuery);
+$('form select').change(function(){
+    var ok = true;
+    $('form select, form input').each(function( index ) {
+        if(!$( this ).val()) {
+            ok = false;
+        }
+    });
+    if(ok) {
+        $('#button-valid').show();
+    }
+    
+});
+
+$('form input').on('input',function(e){
+    var ok = true;
+    $('form select, form input').each(function( index ) {
+        console.log($( this ).val());
+        if(!$( this ).val()) {
+            ok = false;
+        }
+    });
+    if(ok) {
+        $('#button-valid').show();
+    }
+});
