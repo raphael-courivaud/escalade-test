@@ -1,33 +1,38 @@
 var HOST = location.origin.replace(/^http/, 'ws');
 var socket = io(HOST);
 
-function loadUsers(type) {
-    socket.on('users', function(users) {
-        var list = $('#college-fille tbody');
-        list.empty();
-        users.forEach(function(user) {
-            list.append('<tr>'+
-                        '	<td>' +user.firstName+ '</td>'+
-                        '	<td>' +user.lastName+ '</td>'+
-                        '	<td>' +user.bestTime+ '</td>'+
-                        '</tr>');
-        });
-    });
+var tableMap = {
+    collegeMen: 'college-men',
+    collegeWomen: 'college-women',
+    eliteMen: 'elite-men',
+    eliteWomen: 'elite-women',
+    customMen: 'custom-men',
+    customWomen: 'custom-women',
 }
 
-function displayUsers(location, users) {
-    var list = $(location);
-    list.empty();
-    var position = 1;
-    users.forEach(function(user) {
+displayAll();
 
-        list.append('<tr>'+
-                    '	<td>' + position++ + '</td>'+
-                    '	<td>' + user.firstName + '</td>'+
-                    '	<td>' + user.lastName + '</td>'+
-                    '	<td>' + user.bestTime + '</td>'+
+function displayAllUsers(data) {
+    _.forEach(data, function(value, key) {
+        displayUsers(tableMap[key], value);
+    })
+};
+
+function displayUsers(selector, users) {
+
+        var position = 1;
+
+        var list = $('#' + selector + ' tbody');
+        list.empty();
+
+        users.forEach(function(user) {
+
+            list.append('<tr>'+
+                        '	<td>' + position++ + '</td>'+
+                        '	<td>' + user.lastName+ ' ' + user.firstName[0]+ '. </td>'+
+                        '	<td>' + user.bestTime + '</td>'+
                     '</tr>');
-    });
+        });
 }
 
 function displayCollegeWomen() {
@@ -37,7 +42,7 @@ function displayCollegeWomen() {
 
     socket.removeAllListeners();
     socket.on('college-women', function(users) {
-        displayUsers('#single-category tbody', users)
+        displayUsers('single-category', users)
     });
     socket.emit('get-college-women');
 
@@ -49,7 +54,7 @@ function displayCollegeMen() {
     $('#single-category .title').text('Collège garçons');
 
     socket.on('college-men', function(users) {
-        displayUsers('#single-category tbody', users)
+        displayUsers('single-category', users)
     });
     socket.emit('get-college-men');
 }
@@ -60,7 +65,7 @@ function displayEliteWomen() {
     $('#single-category .title').text('Elite filles');
 
     socket.on('elite-women', function(users) {
-        displayUsers('#single-category tbody', users)
+        displayUsers('single-category', users)
     });
     socket.emit('get-elite-women');
 }
@@ -71,7 +76,7 @@ function displayEliteMen() {
     $('#single-category .title').text('Elite garçons');
 
     socket.on('elite-men', function(users) {
-        displayUsers('#single-category tbody', users)
+        displayUsers('single-category', users)
     });
     socket.emit('get-elite-men');
 }
@@ -82,7 +87,7 @@ function displayCustomWomen() {
     $('#single-category .title').text('Aménagée filles');
 
     socket.on('custom-men', function(users) {
-        displayUsers('#single-category tbody', users)
+        displayUsers('single-category', users)
     });
     socket.emit('get-custom-men');
 }
@@ -93,7 +98,7 @@ function displayCustomMen() {
     $('#single-category .title').text('Aménagée garçons');
 
     socket.on('custom-men', function(users) {
-        displayUsers('#single-category tbody', users)
+        displayUsers('single-category', users)
     });
     socket.emit('get-custom-men');
 }
@@ -102,8 +107,8 @@ function displayAll() {
     $('#single-category').hide();
     $('#all-categories').show();
 
-    socket.on('all', function(users) {
-        displayUsers('#single-category tbody', users)
+    socket.on('all', function(data) {
+        displayAllUsers(data)
     });
     socket.emit('get-all');
 }

@@ -22,7 +22,7 @@ var io = require('socket.io')(server);
 
 app.use(passport.initialize());
 // comment/remove this line below to disable auth
-app.use(passport.authenticate('basic', { session: false }));
+//app.use(passport.authenticate('basic', { session: false }));
 app.use('/static', express.static(__dirname + '/static'));;
 
 
@@ -34,6 +34,10 @@ server.listen(port, function() {
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/templates/index.html');
+});
+
+app.get('/material', function (req, res) {
+  res.sendFile(__dirname + '/templates/index.material.html');
 });
 
 app.get('/admin', function (req, res) {
@@ -207,7 +211,14 @@ io.sockets.on('connection', function (socket) {
     });
     
     socket.on('get-all', function (user) {
-      socket.emit('all', db_users);
+      socket.emit('all', {
+       collegeWomen: db_users.collegeWomen.slice(0, 3), 
+       collegeMen: db_users.collegeMen.slice(0, 3), 
+       eliteWomen: db_users.eliteWomen.slice(0, 3), 
+       eliteMen: db_users.eliteMen.slice(0, 3), 
+       customWomen: db_users.customWomen.slice(0, 3), 
+       customMen: db_users.customMen.slice(0, 3), 
+      });
     }); 
 });
   
