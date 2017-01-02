@@ -7,10 +7,7 @@ var express = require('express')
   , basicAuth = require('basic-auth-connect')
   , multer  =   require('multer');
 
-var fs = require('fs'); 
 var parse = require('csv-parse');
-var server = require('http').createServer(app);  
-var io = require('socket.io')(server);
 
 var auth = basicAuth('admin', 'admin');
 
@@ -71,10 +68,7 @@ app.get('/admin/users', function (req, res) {
   });
 });
 
-var uristring =
-    process.env.MONGOLAB_URI ||
-    process.env.MONGOHQ_URL ||
-    'mongodb://localhost/escalade';
+var uristring = process.env.MONGOLAB_URI || 'mongodb://localhost/escalade';
 
 mongoose.connect(uristring, function (err, res) {
   if (err) {
