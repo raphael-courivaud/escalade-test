@@ -14,9 +14,14 @@ var io = require('socket.io')(server);
 
 var auth = basicAuth('admin', 'admin');
 
+var uploadDir = './uploads';
+
+if (!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir);
+}
 var storage =   multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, './uploads');
+    callback(null, uploadDir);
   },
   filename: function (req, file, callback) {
     callback(null, file.fieldname + '-' + Date.now());
