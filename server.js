@@ -16,14 +16,7 @@ var auth = basicAuth('admin', 'admin');
 
 var uploadDir = './uploads';
 
-var storage =   multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, uploadDir);
-  },
-  filename: function (req, file, callback) {
-    callback(null, file.fieldname + '-' + Date.now());
-  }
-});
+var storage =   multer.memoryStorage();
 var upload = multer({ storage : storage}).single('usersFile');
 
 // comment/remove this line below to disable auth
@@ -54,7 +47,7 @@ app.post("/users", function(req, res){
           console.log(err);
           return res.end("Error uploading file.");
       }
-      loadUsers(req.file.path);
+      loadUsers(req.file.buffer.toString());
       res.end("File is uploaded");
   });
 });
@@ -155,37 +148,26 @@ io.sockets.on('connection', function (socket) {
     }); 
 });
 
-function loadUsers(csvPath) {
+function loadUsers(data) {
   mongoose.connection.db.dropCollection('Users', function(err, result) {});
-  var users=[];
-  fs.createReadStream(csvPath)
-    .pipe(parse({delimiter: ','}))
-    .on('data', function(csvrow) {
-        //do something with csvrow
-        users.push(csvrow);        
-    })
-    .on('end',function() {
-      saveUsers();
+  
+  parse(data, {delimiter: ','}, function(err, output){
+      output.forEach(function(user) {
+        var excellence = user[8] === 'Oui';
+        var aUser = new User ({
+          licence: user[0],
+        name: {
+          last: user[1],
+          first: user[2]
+        },
+        category: user[3],
+        type: user[4],
+        club: user[5],
+        city: user[6],
+        team: user[7],
+        excellence: excellence,
+        time: null
+        }).save(function (err) {if (err) console.log ('Error on save!' + err)});
+      });
     });
-
-  function saveUsers() {
-  users.forEach(function(user) {
-    var excellence = user[8] === 'Oui';
-    var aUser = new User ({
-      licence: user[0],
-    name: {
-      last: user[1],
-      first: user[2]
-    },
-    category: user[3],
-    type: user[4],
-    club: user[5],
-    city: user[6],
-    team: user[7],
-    excellence: excellence,
-    time: null
-    }).save(function (err) {if (err) console.log ('Error on save!' + err)});
-  });
-
-  }
 };
