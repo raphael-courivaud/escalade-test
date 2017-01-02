@@ -79,14 +79,20 @@ mongoose.connect(uristring, function (err, res) {
 });
 
 var userSchema = new mongoose.Schema({
+      licence: Number,
       name: {
         first: String,
         last: String
       },
       category: String,
+      type: String,
       club: String,
+      city: String,
+      team: Number,
+      excellence: Boolean,
       time: { type: Number, min: 0 }
     });
+
 var User = mongoose.model('Users', userSchema);
 
 var db_users = {}
@@ -143,25 +149,28 @@ io.sockets.on('connection', function (socket) {
 });
 
 function loadUsers(data) {
-  mongoose.connection.db.dropCollection('Users', function(err, result) {});
-  
-  parse(data, {delimiter: ','}, function(err, output){
+  User.remove({}, function(err) { 
+    parse(data, {delimiter: ','}, function(err, output){
       output.forEach(function(user) {
         var excellence = user[8] === 'Oui';
-        var aUser = new User ({
+        var userObj = {
           licence: user[0],
-        name: {
-          last: user[1],
-          first: user[2]
-        },
-        category: user[3],
-        type: user[4],
-        club: user[5],
-        city: user[6],
-        team: user[7],
-        excellence: excellence,
-        time: null
-        }).save(function (err) {if (err) console.log ('Error on save!' + err)});
+          name: {
+            last: user[1],
+            first: user[2]
+          },
+          category: user[3],
+          type: user[4],
+          club: user[5],
+          city: user[6],
+          team: user[7],
+          excellence: excellence,
+          time: null
+        }
+        console.log(userObj);
+        new User (userObj).save(function (err) {if (err) console.log ('Error on save!' + err)});
       });
     });
+  });
 };
+

@@ -21,7 +21,7 @@ var Admin = function (App) {
                 processData: false,
                 type: 'POST',
                 success: function(data){
-                    alert(data);
+                    getUsers(); 
                 }
             });
         });
@@ -57,26 +57,30 @@ var Admin = function (App) {
         });            
     }
 
+    function checkValue(value) {
+        return value ? value : '';
+    }
+
     function displayUsersList() {
 
         var list = $('#users tbody');
         list.empty();
         users.forEach(function(user) {
             var excellenceIcon = user.excellence ? 'ok' : 'remove';
-            var time = user.time ? user.time : '';
             list.append('<tr>'+
-                        '	<td>' + user.licence + '</td>'+
-                        '	<td>' + user.name.last + '</td>'+
-                        '	<td>' + user.name.first + '</td>'+
-                        '	<td>' + user.category + '</td>'+
-                        '	<td>' + user.type + '</td>'+
-                        '	<td>' + user.club + '</td>'+
-                        '	<td>' + user.city + '</td>'+
-                        '	<td>' + user.team + '</td>'+
+                        '	<td>' + checkValue(user.licence) + '</td>'+
+                        '	<td>' + checkValue(user.name.last) + '</td>'+
+                        '	<td>' + checkValue(user.name.first) + '</td>'+
+                        '	<td>' + checkValue(user.category) + '</td>'+
+                        '	<td>' + checkValue(user.type) + '</td>'+
+                        '	<td>' + checkValue(user.club) + '</td>'+
+                        '	<td>' + checkValue(user.city) + '</td>'+
+                        '	<td>' + checkValue(user.team) + '</td>'+
                         '	<td><span class="glyphicon glyphicon-'+excellenceIcon+'"></span></td>'+
-                        '	<td>' + time + '</td>'+
+                        '	<td>' + checkValue(user.time) + '</td>'+
                         '</tr>');
         });
+        $('#users .title').text('Elèves ('+ users.length +')');
     };
 
     // admin
@@ -86,6 +90,6 @@ var Admin = function (App) {
         init: init,
         showContent: showContent,
         showConfig: showConfig,
-        displayAll: displayAll,
+        displayAll: displayAll
     };
 } (App || {});
