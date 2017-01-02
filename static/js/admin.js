@@ -5,8 +5,8 @@ var Admin = function (App) {
 
     function init(){  
         App.init();
-        getUsers();
-        displayUsersList();   
+        showConfig();
+        getUsers();  
 
         $('#button-upload').click(function (e) {
 
@@ -48,18 +48,19 @@ var Admin = function (App) {
     /*-------------------------------------*/
 
     function getUsers() {
-
-            var list = $('#users tbody');
-            list.empty();
-            $.ajax({
-            url: '/admin/users',
-                success: function(data){
-                    users = data;
-                }
-            });            
+        $.ajax({
+        url: '/admin/users',
+            success: function(data){
+                users = data;
+                displayUsersList(); 
+            }
+        });            
     }
 
     function displayUsersList() {
+
+        var list = $('#users tbody');
+        list.empty();
         users.forEach(function(user) {
             var excellenceIcon = user.excellence ? 'ok' : 'remove';
             var time = user.time ? user.time : '';
