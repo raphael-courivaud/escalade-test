@@ -14,7 +14,10 @@
         <!-- Bootstrap Core CSS -->
         <link href="static/css/bootstrap.min.css" rel="stylesheet">
         <link href="static/css/bootstrap-select.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="static/css/bootstrap-material-design.min.css">
+        <link rel="stylesheet" type="text/css" href="static/css/ripples.min.css">
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
 
         <!-- Custom CSS -->
         <link href="static/css/app.css" rel="stylesheet">
@@ -30,7 +33,7 @@
 
     <body>
 
-    <div id="wrapper">
+            <div id="wrapper">
     
         <!-- Sidebar -->
         <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
@@ -40,8 +43,11 @@
                 <li class="subtitle">
                     
                 </li>
+                <li class="link config">
+                    <a onClick="Admin.showConfig()" href="#">Configurations</a>
+                </li>
                 <li class="link all">
-                    <a onClick="displayAll()" href="#">Toutes catégories</a>
+                    <a onClick="Admin.displayAll()" href="#">Toutes catégories</a>
                 </li>
                 <li class="subtitle">
                     Collège
@@ -81,176 +87,233 @@
     			<span class="hamb-middle"></span>
 				<span class="hamb-bottom"></span>
             </button>
-            <div class="col-md-12">
-                <div class="col-md-6 col-md-offset-3">                    
-                    <div class="card edition-card">               
-                        <div class="title">
-                            Edition
-                        </div>              
-                        <div class="body">
-                            <form class="form-inline">
-                                <select class="selectpicker" id="category-picker">
-                                    <option value=""></option>
-                                    <option value="collegeWomen">Collège filles</option>
-                                    <option value="collegeMen">Collège garçon</option>
-                                    <option value="eliteWomen">Elite filles</option>
-                                    <option value="eliteMen">Elite garçon</option>
-                                    <option value="customWomen">Aménagée filles</option>
-                                    <option value="customMen">Aménagée garçon</option>
-                                </select>
-                                <select class="selectpicker" data-show-subtext="true" data-live-search="true" id="user-picker">
-                                </select>
-                                <input type="text" class="form-control" placeholder="00:00" style="width:67px">
-                                <button id="button-valid" type="button" class="btn btn-sm btn-success" style="display: none">
-                                    <span class="glyphicon glyphicon-ok"></span>&nbsp;
-                                </button>
-                            </form>
+            <div id="config">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="title panel-title">Upload (CSV)</h3>
+                        </div>
+                        <div class="body panel-body">
+                            <form id="users-upload" class="form-horizontal">
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label for="inputFile" class="col-md-1 control-label">Fichier</label>
+
+                                        <div class="col-md-11">
+                                            <input type="text" readonly="" class="form-control" placeholder="...">
+                                            <input type="file" id="usersFile" name="usersFile" multiple="">
+                                        </div>
+                                    </div>  
+                                    
+                                    <button id="button-upload" type="button" class="btn btn-sm btn-success pull-right">
+                                        <span class="glyphicon glyphicon-ok"></span> Valider
+                                    </button>
+                                </fieldset>
+                            </form>                    
+                        </div>
+                    </div>
+                </div>  
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="title panel-title">Elèves</h3>
+                        </div>
+                        <div class="body panel-body">
+                            <table id="users" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th >Licence</th>
+                                        <th >Nom</th>
+                                        <th >Prénom</th>
+                                        <th >Catégory</th>
+                                        <th >Type</th>
+                                        <th >Etablissement</th>
+                                        <th >Ville</th>
+                                        <th >Equipe</th>
+                                        <th >Excellence</th>
+                                        <th >Temps</th>
+                                    </tr>
+                                </thead>
+                                <tbody>                                
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-12">
+
+            <div id="edit" class="col-md-10 col-md-offset-1">
+                <div class="panel panel-primary">               
+                    <div class="panel-heading">
+                        <h3 class="title panel-title">Edition</h3>
+                    </div>             
+                    <div class="body panel-body">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                    <select class="selectpicker" data-show-subtext="true" data-live-search="true" id="club-picker" title="Etablissement..">
+                                    </select>
+                                    <select class="selectpicker" data-show-subtext="true" data-live-search="true" id="user-picker" title="Elève..">
+                                    </select>
+                                    <input type="text" class="form-control" placeholder="00" style="width:18px">.<input type="text" class="form-control" placeholder="00" style="width:18px">
+                                   
+                                    <button id="button-valid" type="button" class="btn btn-sm btn-success">
+                                        <span class="glyphicon glyphicon-ok"></span> Valider
+                                    </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content" class="col-md-10 col-md-offset-1">
                 <div id="single-category">
                     <div class="col-md-6 col-md-offset-3 col-sm-12">
-                        <div class="card">
-                            <div class="title"></div>
-                            <div class="body">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="title panel-title"></h3>
+                            </div>
+                            <div class="body panel-body">
                                 <table id="custom-women" class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th class="col-md-2">Position</th>
-                                            <th class="col-md-4">Prénom</th>
-                                            <th class="col-md-4">Nom</th>
-                                            <th class="col-md-2">Temps</th>
+                                            <th class="col-md-1">#</th>
+                                            <th class="col-md-7">Nom</th>
+                                            <th class="col-md-4">Temps</th>
                                         </tr>
                                     </thead>
                                     <tbody>                                
                                     </tbody>
                                 </table>
-                            </div>   
+                            </div>
                         </div>
                     </div>          
                 </div>
                 <div id="all-categories" class="">
                     <div class="row">
                         <div class="col-md-6 col-sm-12">
-                            <div class="card">
-                                <div class="title">Collège filles</div>
-                                <div class="body">
-                                    <table id="college-women" class="table table-striped">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="title panel-title">Collège filles</h3>
+                                </div>
+                                <div class="body panel-body">
+                                    <table id="custom-women" class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th class="col-md-2">Position</th>
-                                                <th class="col-md-4">Prénom</th>
-                                                <th class="col-md-4">Nom</th>
-                                                <th class="col-md-2">Temps</th>
+                                                <th class="col-md-1">#</th>
+                                                <th class="col-md-7">Nom</th>
+                                                <th class="col-md-4">Temps</th>
                                             </tr>
                                         </thead>
                                         <tbody>                                
                                         </tbody>
                                     </table>
                                 </div>
-                            </div> 
+                            </div>
                         </div>  
                         <div class="col-md-6 col-sm-12">
-                            <div class="card">
-                                <div class="title">Collège garçons</div>
-                                <div class="body">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="title panel-title">Collège garçons</h3>
+                                </div>
+                                <div class="body panel-body">
                                     <table id="college-men" class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th class="col-md-2">Position</th>
-                                                <th class="col-md-4">Prénom</th>
-                                                <th class="col-md-4">Nom</th>
-                                                <th class="col-md-2">Temps</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>                                
-                                        </tbody>
-                                    </table>
-                                </div> 
-                            </div>   
-                        </div> 
-                    </div> 
-                    <div class="row">
-                        <div class="col-md-6 col-sm-12">
-                            <div class="card">
-                                <div class="title">Elite filles</div>
-                                <div class="body">
-                                    <table id="elite-women" class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th class="col-md-2">Position</th>
-                                                <th class="col-md-4">Prénom</th>
-                                                <th class="col-md-4">Nom</th>
-                                                <th class="col-md-2">Temps</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>                                
-                                        </tbody>
-                                    </table>
-                                </div>  
-                            </div>   
-                        </div>  
-                        <div class="col-md-6 col-sm-12">
-                            <div class="card">
-                                <div class="title">Elite garçons</div>
-                                <div class="body">
-                                    <table id="elite-men" class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th class="col-md-2">Position</th>
-                                                <th class="col-md-4">Prénom</th>
-                                                <th class="col-md-4">Nom</th>
-                                                <th class="col-md-2">Temps</th>
+                                                <th class="col-md-1">#</th>
+                                                <th class="col-md-7">Nom</th>
+                                                <th class="col-md-4">Temps</th>
                                             </tr>
                                         </thead>
                                         <tbody>                                
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>    
-                        </div> 
+                            </div>
+                        </div>  
                     </div> 
                     <div class="row">
                         <div class="col-md-6 col-sm-12">
-                            <div class="card">
-                                <div class="title">Aménagée filles</div>
-                                <div class="body">
-                                    <table id="custom-women" class="table table-striped">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="title panel-title">Elite filles</h3>
+                                </div>
+                                <div class="body panel-body">
+                                    <table id="elite-women" class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th class="col-md-2">Position</th>
-                                                <th class="col-md-4">Prénom</th>
-                                                <th class="col-md-4">Nom</th>
-                                                <th class="col-md-2">Temps</th>
+                                                <th class="col-md-1">#</th>
+                                                <th class="col-md-7">Nom</th>
+                                                <th class="col-md-4">Temps</th>
                                             </tr>
                                         </thead>
                                         <tbody>                                
                                         </tbody>
                                     </table>
-                                </div>   
-                            </div>  
-                        </div>   
-                        <div class="col-md-6 col-sm-12">
-                            <div class="card">
-                                <div class="title">Aménagée garçons</div>
-                                <div class="body">
-                                    <table id="custom-women" class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th class="col-md-2">Position</th>
-                                                <th class="col-md-4">Prénom</th>
-                                                <th class="col-md-4">Nom</th>
-                                                <th class="col-md-2">Temps</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>                                
-                                        </tbody>
-                                    </table>
-                                </div>   
+                                </div>
                             </div>
-                        </div>                
+                        </div>  
+                        <div class="col-md-6 col-sm-12">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="title panel-title">Elite garçons</h3>
+                                </div>
+                                <div class="body panel-body">
+                                    <table id="elite-men" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-md-1">#</th>
+                                                <th class="col-md-7">Nom</th>
+                                                <th class="col-md-4">Temps</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>                                
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>  
+                    </div> 
+                    <div class="row"> 
+                        <div class="col-md-6 col-sm-12">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="title panel-title">Aménagée filles</h3>
+                                </div>
+                                <div class="body panel-body">
+                                    <table id="custom-women" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-md-1">#</th>
+                                                <th class="col-md-7">Nom</th>
+                                                <th class="col-md-4">Temps</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>                                
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="title panel-title">Aménagée garçons</h3>
+                                </div>
+                                <div class="body panel-body">
+                                    <table id="custom-men" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-md-1">#</th>
+                                                <th class="col-md-7">Nom</th>
+                                                <th class="col-md-4">Temps</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>                                
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>           
                     </div>
                 </div>
             </div>
@@ -261,13 +324,19 @@
     <!-- /#wrapper -->
     <script src="static/js/jquery.min.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
+    <script src="static/js/lodash.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
     <script src="static/js/bootstrap-select.min.js"></script>
+    <script src="static/js/material.min.js"></script>
+    <script src="static/js/ripples.min.js"></script>
 
     <script src="/static/js/socket.io.js"></script>
     <script src="/static/js/app.js"></script>
+    <script src="/static/js/admin.js"></script>
     <script>
+
+    Admin.init();
+
     $(document).ready(function () {
         var trigger = $('.hamburger'),
         isClosed = false;

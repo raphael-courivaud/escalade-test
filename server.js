@@ -2,29 +2,31 @@ var express = require('express')
   , app = express()
   , server = require('http').createServer(app)
   , io = require('socket.io')(server)
-  , passport = require('passport')
-  , BasicStrategy = require('passport-http').BasicStrategy;
+  , BasicStrategy = require('passport-http').BasicStrategy
+  , mongoose = require ("mongoose")
+  , basicAuth = require('basic-auth-connect')
+  , multer  =   require('multer');
 
-// Use the BasicStrategy within Passport.
-//   Strategies in Passport require a `verify` function, which accept
-//   credentials (in this case, a username and password), and invoke a callback
-//   with a user object.
-passport.use(new BasicStrategy({},
-  function(username, password, done) {
-    var success = (username === 'USERNAME' && password === 'PASSWORD');
-    done(null, success);
-  }
-));
-
-var app = express();
+var fs = require('fs'); 
+var parse = require('csv-parse');
 var server = require('http').createServer(app);  
 var io = require('socket.io')(server);
 
-app.use(passport.initialize());
+var auth = basicAuth('admin', 'admin');
+
+var storage =   multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './uploads');
+  },
+  filename: function (req, file, callback) {
+    callback(null, file.fieldname + '-' + Date.now());
+  }
+});
+var upload = multer({ storage : storage}).single('usersFile');
+
 // comment/remove this line below to disable auth
 //app.use(passport.authenticate('basic', { session: false }));
 app.use('/static', express.static(__dirname + '/static'));;
-
 
 var port = Number(process.env.PORT || 5000);
 
@@ -33,15 +35,26 @@ server.listen(port, function() {
 });
 
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/templates/index.html');
-});
-
-app.get('/material', function (req, res) {
   res.sendFile(__dirname + '/templates/index.material.html');
 });
 
-app.get('/admin', function (req, res) {
+app.get('/admin', auth, function (req, res) {
   res.sendFile(__dirname + '/templates/admin.html');
+});
+
+app.get('/config', auth, function (req, res) {
+  res.sendFile(__dirname + '/templates/config.html');
+});
+
+app.post("/users", function(req, res){
+  upload(req,res,function(err) {
+      if(err) {
+          console.log(err);
+          return res.end("Error uploading file.");
+      }
+      loadUsers(req.file.path);
+      res.end("File is uploaded");
+  });
 });
 
 app.get('/admin', function (req, res) {
@@ -54,128 +67,40 @@ app.get('/admin', function (req, res) {
 
 app.get('/admin/users', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(db_users));
+  User.find({}).exec(function(err, result) {
+    if (!err) {
+      res.send(JSON.stringify(result));
+    } else {
+      // error handling
+    };
+  });
 });
 
-var db_users = {
-  collegeWomen: [
-    {
-      id:1,
-      firstName: 'Marie',
-      lastName: 'Moumou',
-      club: 'Collège de Paris',
-      bestTime: '01:22:05',
-    },
-    {
-      id:2,
-      firstName: 'Louis',
-      lastName: 'Martin',
-      club: 'Collège Emiles Combes',
-      bestTime: '02:19:35',
-    },
-    {
-      id:3,
-      firstName: 'Bernadette',
-      lastName: 'Bernard',
-      club: 'Collège Emiles Combes',
-      bestTime: '02:19:35',
-    }
-  ],
-  collegeMen: [
-    {
-      id:1,
-      firstName: 'Jean',
-      lastName: 'Dupond',
-      club: 'Collège de Paris',
-      bestTime: '01:22:05',
-    },
-    {
-      id:2,
-      firstName: 'Raphaël',
-      lastName: 'Courivaud',
-      club: 'Collège Emiles Combes',
-      bestTime: '08:32:11',
-    },
-    {
-      id:2,
-      firstName: 'Ramon',
-      lastName: 'Lopez',
-      club: 'Collège Emiles Combes',
-      bestTime: '02:19:35',
-    },
-    {
-      id:2,
-      firstName: 'Louis',
-      lastName: 'Robin',
-      club: 'Collège Emiles Combes',
-      bestTime: '02:19:35',
-    }
-  ],
-  eliteWomen: [
-    {
-      id:1,
-      firstName: 'Camille',
-      lastName: '	Mercier',
-      club: 'Collège de Paris',
-      bestTime: '01:22:05',
-    },
-    {
-      id:2,
-      firstName: 'Manon',
-      lastName: '	Fournier',
-      club: 'Collège Emiles Combes',
-      bestTime: '02:19:35',
-    }
-  ],
-  eliteMen: [
-    {
-      id:1,
-      firstName: 'Raoul',
-      lastName: 'Blanc',
-      club: 'Collège de Paris',
-      bestTime: '01:22:05',
-    },
-    {
-      id:2,
-      firstName: 'Daniel',
-      lastName: 'Blanc',
-      club: 'Collège Emiles Combes',
-      bestTime: '02:19:35',
-    }
-  ],
-  customWomen: [
-    {
-      id:1,
-      firstName: 'Lea',
-      lastName: 'Dubois',
-      club: 'Collège de Paris',
-      bestTime: '01:22:05',
-    },
-    {
-      id:2,
-      firstName: 'Emma',
-      lastName: 'Petit',
-      club: 'Collège Emiles Combes',
-      bestTime: '02:19:35',
-    }
-  ],
-  customMen: [
-    {
-      id:1,
-      firstName: 'Michel',
-      lastName: 'Richard',
-      club: 'Collège de Paris',
-      bestTime: '01:22:05',
-    },
-    {
-      id:2,
-      firstName: 'Roger',
-      lastName: 'Moreau',
-      club: 'Collège Emiles Combes',
-      bestTime: '02:19:35',
-    }
-  ]
-};
+var uristring =
+    process.env.MONGOLAB_URI ||
+    process.env.MONGOHQ_URL ||
+    'mongodb://localhost/escalade';
+
+mongoose.connect(uristring, function (err, res) {
+  if (err) {
+  console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+  } else {
+  console.log ('Succeeded connected to: ' + uristring);
+  }
+});
+
+var userSchema = new mongoose.Schema({
+      name: {
+        first: String,
+        last: String
+      },
+      category: String,
+      club: String,
+      time: { type: Number, min: 0 }
+    });
+var User = mongoose.model('Users', userSchema);
+
+var db_users = {}
 
 //Socket.io emits this event when a connection is made.
 io.sockets.on('connection', function (socket) {
@@ -187,7 +112,13 @@ io.sockets.on('connection', function (socket) {
     });  
     
     socket.on('get-college-women', function (user) {
-      socket.emit('college-women', db_users.collegeWomen);
+      User.find({}).exec(function(err, result) {
+        if (!err) {
+          socket.emit('college-women', result);
+        } else {
+          // error handling
+        };
+      });
     });
     
     socket.on('get-college-men', function (user) {
@@ -211,15 +142,48 @@ io.sockets.on('connection', function (socket) {
     });
     
     socket.on('get-all', function (user) {
-      socket.emit('all', {
+      /*socket.emit('all', {
        collegeWomen: db_users.collegeWomen.slice(0, 3), 
        collegeMen: db_users.collegeMen.slice(0, 3), 
        eliteWomen: db_users.eliteWomen.slice(0, 3), 
        eliteMen: db_users.eliteMen.slice(0, 3), 
        customWomen: db_users.customWomen.slice(0, 3), 
        customMen: db_users.customMen.slice(0, 3), 
-      });
+      });*/
     }); 
 });
-  
-io.sockets.emit('users', db_users);
+
+function loadUsers(csvPath) {
+  mongoose.connection.db.dropCollection('Users', function(err, result) {});
+  var users=[];
+  fs.createReadStream(csvPath)
+    .pipe(parse({delimiter: ','}))
+    .on('data', function(csvrow) {
+        //do something with csvrow
+        users.push(csvrow);        
+    })
+    .on('end',function() {
+      saveUsers();
+    });
+
+  function saveUsers() {
+  users.forEach(function(user) {
+    var excellence = user[8] === 'Oui';
+    var aUser = new User ({
+      licence: user[0],
+    name: {
+      last: user[1],
+      first: user[2]
+    },
+    category: user[3],
+    type: user[4],
+    club: user[5],
+    city: user[6],
+    team: user[7],
+    excellence: excellence,
+    time: null
+    }).save(function (err) {if (err) console.log ('Error on save!' + err)});
+  });
+
+  }
+};

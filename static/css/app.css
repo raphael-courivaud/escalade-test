@@ -144,8 +144,11 @@ html { height: 100%;}
 .sidebar-nav li.link.all:before {
     background-color: #47941f;   
 }
-.sidebar-nav li.link.all a {
+.sidebar-nav li.link.all a, .sidebar-nav li.link.config a {
     font-size: medium;  
+}
+.sidebar-nav li.link.config:before {
+    background-color: #009688;   
 }
 .sidebar-nav li.link.girl:before {
     background-color: #ec1b5a;   
