@@ -68,7 +68,7 @@ app.get('/admin/users', function (req, res) {
   });
 });
 
-var uristring = process.env.MONGOLAB_URI || 'mongodb://localhost/escalade';
+var uristring = process.env.MONGODB_URI || 'mongodb://localhost/escalade';
 
 mongoose.connect(uristring, function (err, res) {
   if (err) {
