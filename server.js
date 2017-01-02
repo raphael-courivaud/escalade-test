@@ -16,9 +16,6 @@ var auth = basicAuth('admin', 'admin');
 
 var uploadDir = './uploads';
 
-if (!fs.existsSync(uploadDir)){
-    fs.mkdirSync(uploadDir);
-}
 var storage =   multer.diskStorage({
   destination: function (req, file, callback) {
     callback(null, uploadDir);
