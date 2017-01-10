@@ -1,4 +1,3 @@
-	
 var Explosion = function () {
 
     var self = this;
@@ -107,8 +106,8 @@ var Explosion = function () {
 	 */
 	function createExplosion(x, y, color)
 	{
-		var minSize = 10;
-		var maxSize = 30;
+		var minSize = 20;
+		var maxSize = 50;
 		var count = 10;
 		var minSpeed = 60.0;
 		var maxSpeed = 200.0;
@@ -141,8 +140,7 @@ var Explosion = function () {
 	function update (frameDelay)
 	{
 		// draw a white background to clear canvas
-		context2D.fillStyle = "#FFF";
-		context2D.fillRect(0, 0, context2D.canvas.width, context2D.canvas.height);
+		context2D.clearRect(0, 0, context2D.canvas.width, context2D.canvas.height);
 		
 		// update and draw particles
 		for (var i=0; i<particles.length; i++)
@@ -159,7 +157,11 @@ var Explosion = function () {
 		// canvas and 2D context initialization
         $( document ).ready(function() {
             canvas = document.getElementById(settings.canvasId);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
             context2D = canvas.getContext("2d");
+		    context2D.fillStyle = "rgba(0, 0, 0, 0.9)";
+            
         })
         return interfaces; 
     }
@@ -174,17 +176,17 @@ var Explosion = function () {
 
         var explodeCounter = 0;
         var refreshIntervalId = setInterval(function() {
-            if(++explodeCounter >= 30) {
+            if(++explodeCounter >= 50) {
                 clearInterval(refreshIntervalId);
                 setTimeout(function(){ clearInterval(updateInterval)}, 1000);
             }
-            var x = randomFloat(100, 400);
-            var y = randomFloat(100, 400);
+            var x = randomFloat(100, canvas.width-100);
+            var y = randomFloat(100, canvas.height-100);
             
             createExplosion(x, y, "#525252");
             createExplosion(x, y, "#FFA318");            
             createExplosion(x, y, "red");
-        }, 80);      
+        }, 50);      
     }
 
     return interfaces;
