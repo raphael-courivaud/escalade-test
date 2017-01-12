@@ -29,7 +29,7 @@ var Admin = function (App) {
         
         testExplosion = Explosion.init({canvasId: 'test-canvas'});
 
-        loadEvent();
+        loadEvents();
     };
 
     function showContent(){ 
