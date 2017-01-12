@@ -59,7 +59,7 @@ app.get('/admin', function (req, res) {
 
 app.get('/admin/users', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
-  User.find({}).sort({'name.last' : 'asc', 'name.first' : 'asc'}).exec(function(err, result) {
+      city: String,  User.find({}).sort({'club' : 'asc', 'city' : 'asc', 'name.last' : 'asc', 'name.first' : 'asc'}).exec(function(err, result) {
     if (!err) {
       res.send(JSON.stringify(result));
     } else {
