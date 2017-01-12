@@ -54,7 +54,9 @@ var Admin = function (App) {
 
     function loadEvents() {
         $('#button-test-explosion').click(function() {
+            $('canvas').css('z-index', 1000);
             testExplosion.explode();
+            $('canvas').css('z-index', 0);
         });
     }
 
