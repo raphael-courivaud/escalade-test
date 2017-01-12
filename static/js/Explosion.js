@@ -154,6 +154,7 @@ var Explosion = function () {
 	
 	function init(settings)
 	{
+		self.config = settings;
 		// canvas and 2D context initialization
         $( document ).ready(function() {
             canvas = document.getElementById(settings.canvasId);
@@ -168,7 +169,7 @@ var Explosion = function () {
 
     
     function explode() {
-		$('#' + settings.canvasId).css('z-index', 1000);
+		$('#' + config.canvasId).css('z-index', 1000);
         var updateInterval = setInterval(function()
 		{
 			update(frameDelay);
@@ -180,7 +181,7 @@ var Explosion = function () {
             if(++explodeCounter >= 50) {
                 clearInterval(refreshIntervalId);
                 setTimeout(function(){ clearInterval(updateInterval)}, 1000);
-				$('#' + settings.canvasId).css('z-index', 0);
+				$('#' + config.canvasId).css('z-index', 0);
             }
             var x = randomFloat(100, canvas.width-100);
             var y = randomFloat(100, canvas.height-100);
