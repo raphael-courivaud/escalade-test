@@ -2,6 +2,7 @@
 var Admin = function (App) {
 
     var users = [];
+    var testExplosion;
 
     function init(){  
         App.init();
@@ -25,6 +26,10 @@ var Admin = function (App) {
                 }
             });
         });
+        
+        testExplosion = Explosion.init({canvasId: 'test-canvas'});
+
+        loadEvent();
     };
 
     function showContent(){ 
@@ -46,6 +51,12 @@ var Admin = function (App) {
 
     /*-------------------------------------*/
     /*-------------------------------------*/
+
+    function loadEvents() {
+        $('#button-test-explosion').click(function() {
+            testExplosion.explode();
+        });
+    }
 
     function getUsers() {
         $.ajax({

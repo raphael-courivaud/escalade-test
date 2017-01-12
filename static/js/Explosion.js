@@ -192,6 +192,3 @@ var Explosion = function () {
     return interfaces;
 
 } ();
-
-var explosion = Explosion.init({canvasId: 'canvas'});
-explosion.explode();
