@@ -59,7 +59,7 @@ app.get('/admin', function (req, res) {
 
 app.get('/admin/users', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
-  User.find({}).exec(function(err, result) {
+  User.find({}).sort({'name.last' : 'asc'}).exec(function(err, result) {
     if (!err) {
       res.send(JSON.stringify(result));
     } else {
@@ -94,6 +94,11 @@ var userSchema = new mongoose.Schema({
     });
 
 var User = mongoose.model('Users', userSchema);
+
+
+var configSchema = new mongoose.Schema({
+      
+  });
 
 var db_users = {}
 

@@ -106,8 +106,8 @@ var Explosion = function () {
 	 */
 	function createExplosion(x, y, color)
 	{
-		var minSize = 20;
-		var maxSize = 50;
+		var minSize = 15;
+		var maxSize = 35;
 		var count = 10;
 		var minSpeed = 60.0;
 		var maxSpeed = 200.0;
