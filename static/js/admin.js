@@ -106,8 +106,11 @@ var Admin = function (App) {
         }
 
         var time = (seconds + 0.01 * subSeconds) * 1000;
-        $.post( '/admin/users/result', {userId: userId, time: time}, 
-        function( data ) {
+        $.ajax('/admin/users/result', {
+            data : JSON.stringify({userId: userId, time: time}),
+            contentType : 'application/json',
+            type : 'POST'
+        }, function( data ) {
             $('#user-picker').val('');
             $('#user-picker').selectpicker('refresh');
             $('#input-seconds').val(null);
