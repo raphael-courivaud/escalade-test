@@ -180,7 +180,7 @@ function loadUsers(data) {
 
 
 function emitCollegeWomen() {
-  User.find({type: 'COL', $or : [{category: 'MF'}, {category: 'BF'}], time: { $ne: null } }).exec(function(err, result) {
+  User.find({type: 'COL', time: { $ne: null } }).exec(function(err, result) {
     if (!err) {
       socket.emit('college-women', result);      
     }
