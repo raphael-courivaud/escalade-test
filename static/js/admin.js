@@ -108,7 +108,7 @@ var Admin = function (App) {
         var time = (seconds + 0.01 * subSeconds) * 1000;
         $.post( '/admin/users/result', {userId: userId, time: time}, 
         function( data ) {
-            var userId = $('#user-picker').val(null);
+            var userId = $('#user-picker').val('');
             var second = $('#input-seconds').val(null);
             var subSeconds = $('#input-subseconds').val(null);
         });
