@@ -171,7 +171,8 @@ var App = function () {
         init: init,
         showContent: showContent,
         hideContent: hideContent,
-        displayAll: displayAll
+        displayAll: displayAll,
+        displayCollegeWomen: displayCollegeWomen
     };
 
 } ();
