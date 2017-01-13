@@ -87,14 +87,14 @@ var Admin = function (App) {
             $('button[data-id="user-picker"]').css('background-color', 'white');     
         }
 
-        if(isNaN(seconds)) {
+        if(seconds === '' || isNaN(seconds)) {
             $('#input-seconds').css('background-color', '#ff7777');
             error = true;       
         } else {
             $('#input-seconds').css('background-color', 'white');            
         }
 
-        if(isNaN(subSeconds)) {
+        if(subSeconds === '' || isNaN(subSeconds)) {
             $('#input-subseconds').css('background-color', '#ff7777');
             error = true;       
         } else {
