@@ -8,9 +8,7 @@ var Admin = function (App) {
         App.init();
         showConfig();
         getUsers();  
-
-        loadClubs();
-        
+       
         testExplosion = Explosion.init({canvasId: 'test-canvas'});
 
         loadEvents();
@@ -120,7 +118,8 @@ var Admin = function (App) {
         $.ajax({
         url: '/admin/users',
             success: function(data){
-                usersList = data;
+                usersList = data;                
+                loadClubs();
                 displayUsersList(); 
             }
         });            
