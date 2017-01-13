@@ -31,7 +31,7 @@ var Admin = function (App) {
         App.displayAll();
     }
 
-    function displayAll() {
+    function displayCollegeWomen() {
         showContent();
         App.displayCollegeWomen();
     }
