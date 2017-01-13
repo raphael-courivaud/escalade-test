@@ -31,6 +31,11 @@ var Admin = function (App) {
         App.displayAll();
     }
 
+    function displayAll() {
+        showContent();
+        App.displayCollegeWomen();
+    }
+
     /*-------------------------------------*/
     /*-------------------------------------*/
 
@@ -167,6 +172,6 @@ var Admin = function (App) {
         showContent: showContent,
         showConfig: showConfig,
         displayAll: displayAll,
-        displayCollegeWomen: App.displayCollegeWomen
+        displayCollegeWomen: displayCollegeWomen
     };
 } (App || {});
