@@ -155,6 +155,7 @@ var Admin = function (App) {
         var clubs = _.uniq(_.pluck(usersList, 'club')).forEach(function(club) {
             $('#club-picker').append($("<option></option>").attr("value", club).text(club));
         });
+        $('#club-picker').selectpicker('refresh');
     }
 
     return {
