@@ -69,7 +69,7 @@ var Admin = function (App) {
             $('#user-picker').empty();
             $('#user-picker').append($("<option></option>").attr("value", '').text(''));
             _.filter(usersList, {club: value}).forEach(function(user) {
-                $('#user-picker').append($("<option></option>").attr("value", user.id).text(user.name.first + ' ' + user.name.last));
+                $('#user-picker').append($("<option></option>").attr("value", user._id).text(user.name.first + ' ' + user.name.last));
             });
             $('#user-picker').selectpicker('refresh');
         });
@@ -105,7 +105,7 @@ var Admin = function (App) {
             return;
         }
 
-        var time = (seconds + 0.01 * subSeconds) * 1000;
+        var time = (seconds + (0.01 * subSeconds)) * 1000;
         $.ajax('/admin/users/result', {
             data : JSON.stringify({userId: userId, time: time}),
             contentType : 'application/json',

@@ -5,7 +5,8 @@ var express = require('express')
   , BasicStrategy = require('passport-http').BasicStrategy
   , mongoose = require ("mongoose")
   , basicAuth = require('basic-auth-connect')
-  , multer  =   require('multer');
+  , multer  =   require('multer')
+  , bodyParser = require('body-parser');
 
 var parse = require('csv-parse');
 
@@ -19,6 +20,7 @@ var upload = multer({ storage : storage}).single('usersFile');
 // comment/remove this line below to disable auth
 //app.use(passport.authenticate('basic', { session: false }));
 app.use('/static', express.static(__dirname + '/static'));;
+app.use(bodyParser.json())
 
 var port = Number(process.env.PORT || 5000);
 
@@ -50,7 +52,15 @@ app.post("/users", function(req, res){
 });
 
 app.post("/admin/users/result", function(req, res){
-  res.sendStatus(200);
+  User.findOne({'_id' : req.body.id }, function(err, user){
+      user.time = req.body.time;
+      user.save();
+      User.find({ time: { $ne: null } }).sort({'time' : 'asc'}).limit(5).exec(function(err, result) {
+      if (!err) {
+        socket.emit('elite-women', result);
+      }
+    });
+  });
 });
 
 app.get('/admin', function (req, res) {
