@@ -166,6 +166,7 @@ var Admin = function (App) {
         init: init,
         showContent: showContent,
         showConfig: showConfig,
-        displayAll: displayAll
+        displayAll: displayAll,
+        displayCollegeWomen: App.displayCollegeWomen
     };
 } (App || {});
