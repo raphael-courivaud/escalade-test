@@ -181,7 +181,7 @@ function loadUsers(data) {
 
 
 function emitCollegeWomen() {
-  User.find({type: 'COL', time: { $ne: null } }).exec(function(err, result) {
+  User.find({}).exec(function(err, result) {
     if (!err) {
       io.sockets.emit('college-women', result);      
     }
