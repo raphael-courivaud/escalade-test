@@ -68,7 +68,7 @@ var Admin = function (App) {
             }
             $('#user-picker').empty();
             $('#user-picker').append($("<option></option>").attr("value", '').text(''));
-            _.find(usersList, {club: value}).forEach(function(user) {
+            _.filter(usersList, {club: value}).forEach(function(user) {
                 $('#user-picker').append($("<option></option>").attr("value", user.id).attr("data-subtext", user.club).text(user.firstName + ' ' + user.lastName));
             });
             $('#user-picker').selectpicker('refresh');
