@@ -110,7 +110,7 @@ var Admin = function (App) {
             return;
         }
 
-        var time = (seconds + (0.01 * subSeconds)) * 1000;
+        var time = (seconds + (0.01 * subSeconds)) * 100;
         $.ajax('/admin/users/result', {
             data : JSON.stringify({userId: userId, time: time}),
             contentType : 'application/json',
