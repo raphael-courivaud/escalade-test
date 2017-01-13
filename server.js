@@ -115,12 +115,7 @@ var db_users = {}
 //Socket.io emits this event when a connection is made.
 io.sockets.on('connection', function (socket) {
 
-    
-    socket.on('add-user', function (user) {
-      db_users.push(user);
-      io.sockets.emit('users', db_users);
-    });  
-    
+        
     socket.on('get-college-women', function (user) {
       emitCollegeWomen();
     });
@@ -185,9 +180,9 @@ function loadUsers(data) {
 
 
 function emitCollegeWomen() {
-  User.find({type: 'COL', $or : [{category: 'MF'}, {category: 'BF'},], time: { $ne: null } }).sort({'time' : 'asc'}).exec(function(err, result) {
+  User.find({type: 'COL', $or : [{category: 'MF'}, {category: 'BF'}], time: { $ne: null } }).exec(function(err, result) {
     if (!err) {
-      socket.emit('elite-women', result);      
+      socket.emit('college-women', result);      
     }
   });
 }
