@@ -1,7 +1,7 @@
 
 var Admin = function (App) {
 
-    var users = [];
+    var usersList = [];
     var testExplosion;
 
     function init(){  
@@ -9,7 +9,7 @@ var Admin = function (App) {
         showConfig();
         getUsers();  
 
-        
+        getClubs();
         
         testExplosion = Explosion.init({canvasId: 'test-canvas'});
 
@@ -62,6 +62,19 @@ var Admin = function (App) {
                 }
             });
         });
+
+        $('#club-picker').change(function(){
+            var value = $(this).val();
+            if(!value) {
+                return;
+            }
+            $('#user-picker').empty();
+            $('#user-picker').append($("<option></option>").attr("value", '').text(''));
+            _.find(usersList, {club: value}).forEach(function(user) {
+                $('#user-picker').append($("<option></option>").attr("value", user.id).attr("data-subtext", user.club).text(user.firstName + ' ' + user.lastName));
+            });
+            $('#user-picker').selectpicker('refresh');
+        });
     }
 
     function saveScore() {
@@ -69,7 +82,7 @@ var Admin = function (App) {
         var seconds = $('#input-seconds').val();
         var subSeconds = $('#input-subseconds').val();
         var error = false;
-        if(userId === undefined) {
+        if(userId === '') {
             $('button[data-id="user-picker"]').css('background-color', '#ff7777');
             error = true;       
         } else {
@@ -107,7 +120,7 @@ var Admin = function (App) {
         $.ajax({
         url: '/admin/users',
             success: function(data){
-                users = data;
+                usersList = data;
                 displayUsersList(); 
             }
         });            
@@ -121,7 +134,7 @@ var Admin = function (App) {
 
         var list = $('#users tbody');
         list.empty();
-        users.forEach(function(user) {
+        usersList.forEach(function(user) {
             var excellenceIcon = user.excellence ? 'ok' : 'remove';
             list.append('<tr>'+
                         '	<td>' + checkValue(user.licence) + '</td>'+
@@ -136,11 +149,14 @@ var Admin = function (App) {
                         '	<td>' + checkValue(user.time) + '</td>'+
                         '</tr>');
         });
-        $('#users .title').text('Elèves ('+ users.length +')');
+        $('#users .title').text('Elèves ('+ usersList.length +')');
     };
 
-    // admin
-    var users = [];
+    function loadClubs() {
+        var clubs = _.uniq(_.pluck(usersList, 'club')).forEach(function(club) {
+            $('#club-picker').append($("<option></option>").attr("value", club).text(club));
+        });
+    }
 
     return {
         init: init,
