@@ -183,7 +183,7 @@ function loadUsers(data) {
 function emitCollegeWomen() {
   User.find({}).exec(function(err, result) {
     if (!err) {
-      io.sockets.emit('college-women', result);      
+      io.emit('college-women', result);      
     }
   });
 }
