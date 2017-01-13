@@ -21,6 +21,7 @@ var upload = multer({ storage : storage}).single('usersFile');
 //app.use(passport.authenticate('basic', { session: false }));
 app.use('/static', express.static(__dirname + '/static'));;
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var port = Number(process.env.PORT || 5000);
 
@@ -52,13 +53,11 @@ app.post("/users", function(req, res){
 });
 
 app.post("/admin/users/result", function(req, res){
-  
-  res.send(JSON.stringify(res.body));
-  /*User.findOne({'_id' : req.body.userId }, function(err, user){
+  User.findOne({'_id' : req.body.userId }, function(err, user){
       user.time = req.body.time;
       user.save(function (err) {if (err) console.log ('Error on save!' + err)});
       emitCollegeWomen();
-  });*/
+  });
 });
 
 app.get('/admin', function (req, res) {
