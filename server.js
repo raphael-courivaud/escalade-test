@@ -122,13 +122,7 @@ io.sockets.on('connection', function (socket) {
     });  
     
     socket.on('get-college-women', function (user) {
-      User.find({}).exec(function(err, result) {
-        if (!err) {
-          socket.emit('college-women', result);
-        } else {
-          // error handling
-        };
-      });
+      emitCollegeWomen();
     });
     
     socket.on('get-college-men', function (user) {
