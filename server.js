@@ -57,6 +57,7 @@ app.post("/admin/users/result", function(req, res){
       user.time = req.body.time;
       user.save(function (err) {if (err) console.log ('Error on save!' + err)});
       emitCollegeWomen();
+      res.sendStatus(200)
   });
 });
 
@@ -183,7 +184,7 @@ function loadUsers(data) {
 function emitCollegeWomen() {
   User.find({}).exec(function(err, result) {
     if (!err) {
-      io.emit('college-women', result);      
+      io.sockets.emit('college-women', result);      
     }
   });
 }
