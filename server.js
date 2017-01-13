@@ -55,11 +55,7 @@ app.post("/admin/users/result", function(req, res){
   User.findOne({'_id' : req.body.id }, function(err, user){
       user.time = req.body.time;
       user.save();
-      User.find({ time: { $ne: null } }).sort({'time' : 'asc'}).limit(5).exec(function(err, result) {
-      if (!err) {
-        socket.emit('elite-women', result);
-      }
-    });
+      emitCollegeWomen();
   });
 });
 
@@ -193,3 +189,11 @@ function loadUsers(data) {
   });
 };
 
+
+function emitCollegeWomen() {
+  User.find({type: 'COL', $or : [{category: 'MF'}, {category: 'BF'},], time: { $ne: null } }).sort({'time' : 'asc'}).exec(function(err, result) {
+    if (!err) {
+      socket.emit('elite-women', result);      
+    }
+  });
+}
