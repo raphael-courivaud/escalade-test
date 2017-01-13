@@ -110,7 +110,7 @@ var Admin = function (App) {
             return;
         }
 
-        var time = (seconds + (0.01 * subSeconds)) * 100;
+        var time = (seconds + (0.01 * subSeconds)) * 1000;
         $.ajax('/admin/users/result', {
             data : JSON.stringify({userId: userId, time: time}),
             contentType : 'application/json',
@@ -154,7 +154,7 @@ var Admin = function (App) {
                         '	<td>' + checkValue(user.city) + '</td>'+
                         '	<td>' + checkValue(user.team) + '</td>'+
                         '	<td><span class="glyphicon glyphicon-'+excellenceIcon+'"></span></td>'+
-                        '	<td>' + checkValue(user.time) + '</td>'+
+                        '	<td>' + checkValue(user.time/1000) + '</td>'+
                         '</tr>');
         });
         $('#users .title').text('Elèves ('+ usersList.length +')');
