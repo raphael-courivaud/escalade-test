@@ -49,6 +49,10 @@ app.post("/users", function(req, res){
   });
 });
 
+app.post("/admin/users/result", function(req, res){
+  res.sendStatus(200);
+});
+
 app.get('/admin', function (req, res) {
   res.sendFile(__dirname + '/templates/admin.html');
 });
