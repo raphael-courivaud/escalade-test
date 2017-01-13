@@ -52,11 +52,13 @@ app.post("/users", function(req, res){
 });
 
 app.post("/admin/users/result", function(req, res){
-  User.findOne({'_id' : req.body.userId }, function(err, user){
+  
+  res.send(JSON.stringify(res.body));
+  /*User.findOne({'_id' : req.body.userId }, function(err, user){
       user.time = req.body.time;
       user.save(function (err) {if (err) console.log ('Error on save!' + err)});
       emitCollegeWomen();
-  });
+  });*/
 });
 
 app.get('/admin', function (req, res) {
