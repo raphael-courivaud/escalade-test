@@ -9,7 +9,7 @@ var Admin = function (App) {
         showConfig();
         getUsers();  
 
-        getClubs();
+        loadClubs();
         
         testExplosion = Explosion.init({canvasId: 'test-canvas'});
 
