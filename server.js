@@ -52,7 +52,7 @@ app.post("/users", function(req, res){
 });
 
 app.post("/admin/users/result", function(req, res){
-  User.findOne({'_id' : req.body.id }, function(err, user){
+  User.findOne({'_id' : req.body.userId }, function(err, user){
       user.time = req.body.time;
       user.save();
       emitCollegeWomen();
