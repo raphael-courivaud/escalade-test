@@ -54,7 +54,7 @@ app.post("/users", function(req, res){
 app.post("/admin/users/result", function(req, res){
   User.findOne({'_id' : req.body.userId }, function(err, user){
       user.time = req.body.time;
-      user.save();
+      user.save(function (err) {if (err) console.log ('Error on save!' + err)});
       emitCollegeWomen();
   });
 });
