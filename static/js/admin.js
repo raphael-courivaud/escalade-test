@@ -69,7 +69,7 @@ var Admin = function (App) {
         var seconds = $('#input-seconds').val();
         var subSeconds = $('#input-subseconds').val();
         var error = false;
-        if(id === undefined) {
+        if(userId === undefined) {
             $('button[data-id="user-picker"]').css('background-color', '#ff7777');
             error = true;       
         } else {
