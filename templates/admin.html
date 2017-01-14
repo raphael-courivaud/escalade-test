@@ -2,6 +2,7 @@
 <html lang="en">
 
     <head>
+        <link rel="icon" href="static/images/icon.ico">
 
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -143,22 +144,22 @@
             </div>
 
             <div id="edit" class="col-md-10 col-md-offset-1">
-                <div class="panel panel-primary">               
+                <div class="panel panel-info">               
                     <div class="panel-heading">
                         <h3 class="title panel-title">Edition</h3>
                     </div>             
                     <div class="body panel-body">
                         <form class="form-inline">
                             <div class="form-group">
-                                    <select class="selectpicker" data-show-subtext="true" data-live-search="true" id="club-picker" title="Etablissement..">
-                                    </select>
-                                    <select class="selectpicker" data-show-subtext="true" data-live-search="true" id="user-picker" title="Elève..">
-                                    </select>
-                                    <input type="text" class="form-control" placeholder="00" style="width:18px">.<input type="text" class="form-control" placeholder="00" style="width:18px">
-                                   
-                                    <button id="button-valid" type="button" class="btn btn-sm btn-success">
-                                        <span class="glyphicon glyphicon-ok"></span> Valider
-                                    </button>
+                                <select class="selectpicker" data-show-subtext="true" data-live-search="true" id="club-picker" title="Etablissement..">
+                                </select>
+                                <select class="selectpicker" data-show-subtext="true" data-live-search="true" id="user-picker" title="Elève..">
+                                </select>
+                                <input id="input-seconds" type="text" class="form-control" placeholder="00" maxlength="2" style="width:18px">.<input type="text" maxlength="2" class="form-control" placeholder="00" style="width:18px">
+                                
+                                <button id="button-valid" type="button" class="btn btn-sm btn-success">
+                                    <span class="glyphicon glyphicon-ok"></span> Valider
+                                </button>
                             </div>
                         </form>
                     </div>

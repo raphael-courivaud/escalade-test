@@ -25,6 +25,14 @@ var Admin = function (App) {
                 }
             });
         });
+
+        $('#input-seconds').bind("input", function() {
+            var $this = $(this);
+            setTimeout(function() {
+                if ( $this.val().length >= parseInt($this.attr("maxlength"),10) )
+                    $this.next("input").focus();
+            },0);
+        });
     };
 
     function showContent(){ 
