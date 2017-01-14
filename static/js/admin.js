@@ -1,13 +1,17 @@
 
 var Admin = function (App) {
 
-    var users = [];
+    var usersList = [];
+    var testExplosion;
 
     function init(){  
         App.init();
         showConfig();
         getUsers();  
+       
+        testExplosion = Explosion.init({canvasId: 'test-canvas'});
 
+<<<<<<< HEAD
         $('#button-upload').click(function (e) {
 
             var data = new FormData();
@@ -33,6 +37,9 @@ var Admin = function (App) {
                     $this.next("input").focus();
             },0);
         });
+=======
+        loadEvents();
+>>>>>>> d23b6a7b65d0e7498f5866105594aefafd47fc50
     };
 
     function showContent(){ 
@@ -52,14 +59,104 @@ var Admin = function (App) {
         App.displayAll();
     }
 
+    function displayCollegeWomen() {
+        showContent();
+        App.displayCollegeWomen();
+    }
+
     /*-------------------------------------*/
     /*-------------------------------------*/
+
+    function loadEvents() {
+        $('#button-valid').click(function() {
+            saveScore();
+        });
+
+        $('#button-test-explosion').click(function() {
+            testExplosion.explode();
+        });
+
+        $('#button-upload').click(function (e) {
+
+            var data = new FormData();
+            data.append('usersFile', $('#usersFile')[0].files[0]);
+
+            $.ajax({
+                url: '/users',
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                success: function(data){
+                    getUsers(); 
+                }
+            });
+        });
+
+        $('#club-picker').change(function(){
+            var value = $(this).val();
+            if(!value) {
+                return;
+            }
+            $('#user-picker').empty();
+            $('#user-picker').append($("<option></option>").attr("value", '').text(''));
+            _.filter(usersList, {club: value}).forEach(function(user) {
+                $('#user-picker').append($("<option></option>").attr("value", user._id).text(user.name.first + ' ' + user.name.last));
+            });
+            $('#user-picker').selectpicker('refresh');
+        });
+    }
+
+    function saveScore() {
+        var userId = $('#user-picker').val();
+        var seconds = $('#input-seconds').val();
+        var subSeconds = $('#input-subseconds').val();
+        var error = false;
+        if(userId === '') {
+            $('button[data-id="user-picker"]').css('background-color', '#ff7777');
+            error = true;       
+        } else {
+            $('button[data-id="user-picker"]').css('background-color', 'white');     
+        }
+
+        if(seconds === '' || isNaN(seconds)) {
+            $('#input-seconds').css('background-color', '#ff7777');
+            error = true;       
+        } else {
+            $('#input-seconds').css('background-color', 'white');            
+        }
+
+        if(subSeconds === '' || isNaN(subSeconds)) {
+            $('#input-subseconds').css('background-color', '#ff7777');
+            error = true;       
+        } else {
+            $('#input-subseconds').css('background-color', 'white');            
+        }
+
+        if(error) {
+            return;
+        }
+
+        var time = (seconds + (0.01 * subSeconds)) * 1000;
+        $.ajax('/admin/users/result', {
+            data : JSON.stringify({userId: userId, time: time}),
+            contentType : 'application/json',
+            type : 'POST'
+        }, function( data ) {
+            $('#user-picker').val('');
+            $('#user-picker').selectpicker('refresh');
+            $('#input-seconds').val(null);
+            $('#input-subseconds').val(null);
+        });
+    }
 
     function getUsers() {
         $.ajax({
         url: '/admin/users',
             success: function(data){
-                users = data;
+                usersList = data;                
+                loadClubs();
                 displayUsersList(); 
             }
         });            
@@ -73,7 +170,7 @@ var Admin = function (App) {
 
         var list = $('#users tbody');
         list.empty();
-        users.forEach(function(user) {
+        usersList.forEach(function(user) {
             var excellenceIcon = user.excellence ? 'ok' : 'remove';
             list.append('<tr>'+
                         '	<td>' + checkValue(user.licence) + '</td>'+
@@ -85,19 +182,24 @@ var Admin = function (App) {
                         '	<td>' + checkValue(user.city) + '</td>'+
                         '	<td>' + checkValue(user.team) + '</td>'+
                         '	<td><span class="glyphicon glyphicon-'+excellenceIcon+'"></span></td>'+
-                        '	<td>' + checkValue(user.time) + '</td>'+
+                        '	<td>' + checkValue(user.time/1000) + '</td>'+
                         '</tr>');
         });
-        $('#users .title').text('Elèves ('+ users.length +')');
+        $('#users .title').text('Elèves ('+ usersList.length +')');
     };
 
-    // admin
-    var users = [];
+    function loadClubs() {
+        var clubs = _.uniq(_.pluck(usersList, 'club')).forEach(function(club) {
+            $('#club-picker').append($("<option></option>").attr("value", club).text(club));
+        });
+        $('#club-picker').selectpicker('refresh');
+    }
 
     return {
         init: init,
         showContent: showContent,
         showConfig: showConfig,
-        displayAll: displayAll
+        displayAll: displayAll,
+        displayCollegeWomen: displayCollegeWomen
     };
 } (App || {});

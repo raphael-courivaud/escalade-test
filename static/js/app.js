@@ -139,17 +139,7 @@ var App = function () {
             });
     })
 
-    $('#category-picker').change(function(){
-        if(!$(this).val()) {
-            return;
-        }
-        $('#user-picker').empty();
-        $('#user-picker').append($("<option></option>").attr("value", '').text(''));
-        users[$(this).val()].forEach(function(user) {
-            $('#user-picker').append($("<option></option>").attr("value", user.id).attr("data-subtext", user.club).text(user.firstName + ' ' + user.lastName));
-        });
-        $('#user-picker').selectpicker('refresh');
-    });
+    
 
     $('form select').change(function(){
         var ok = true;
@@ -181,7 +171,8 @@ var App = function () {
         init: init,
         showContent: showContent,
         hideContent: hideContent,
-        displayAll: displayAll
+        displayAll: displayAll,
+        displayCollegeWomen: displayCollegeWomen
     };
 
 } ();

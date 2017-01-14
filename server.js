@@ -5,7 +5,8 @@ var express = require('express')
   , BasicStrategy = require('passport-http').BasicStrategy
   , mongoose = require ("mongoose")
   , basicAuth = require('basic-auth-connect')
-  , multer  =   require('multer');
+  , multer  =   require('multer')
+  , bodyParser = require('body-parser');
 
 var parse = require('csv-parse');
 
@@ -19,6 +20,8 @@ var upload = multer({ storage : storage}).single('usersFile');
 // comment/remove this line below to disable auth
 //app.use(passport.authenticate('basic', { session: false }));
 app.use('/static', express.static(__dirname + '/static'));;
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var port = Number(process.env.PORT || 5000);
 
@@ -49,6 +52,15 @@ app.post("/users", function(req, res){
   });
 });
 
+app.post("/admin/users/result", function(req, res){
+  User.findOne({'_id' : req.body.userId }, function(err, user){
+      user.time = req.body.time;
+      user.save(function (err) {if (err) console.log ('Error on save!' + err)});
+      emitCollegeWomen();
+      res.sendStatus(200)
+  });
+});
+
 app.get('/admin', function (req, res) {
   res.sendFile(__dirname + '/templates/admin.html');
 });
@@ -59,7 +71,7 @@ app.get('/admin', function (req, res) {
 
 app.get('/admin/users', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
-  User.find({}).exec(function(err, result) {
+      city: String,  User.find({}).sort({'city' : 'asc', 'club' : 'asc', 'team' : 'asc', 'name.last' : 'asc', 'name.first' : 'asc'}).exec(function(err, result) {
     if (!err) {
       res.send(JSON.stringify(result));
     } else {
@@ -95,25 +107,19 @@ var userSchema = new mongoose.Schema({
 
 var User = mongoose.model('Users', userSchema);
 
+
+var configSchema = new mongoose.Schema({
+      
+  });
+
 var db_users = {}
 
 //Socket.io emits this event when a connection is made.
 io.sockets.on('connection', function (socket) {
 
-    
-    socket.on('add-user', function (user) {
-      db_users.push(user);
-      io.sockets.emit('users', db_users);
-    });  
-    
+        
     socket.on('get-college-women', function (user) {
-      User.find({}).exec(function(err, result) {
-        if (!err) {
-          socket.emit('college-women', result);
-        } else {
-          // error handling
-        };
-      });
+      emitCollegeWomen();
     });
     
     socket.on('get-college-men', function (user) {
@@ -174,3 +180,11 @@ function loadUsers(data) {
   });
 };
 
+
+function emitCollegeWomen() {
+  User.find({}).sort({time : 'asc'}).exec(function(err, result) {
+    if (!err) {
+      io.sockets.emit('college-women', result);      
+    }
+  });
+}

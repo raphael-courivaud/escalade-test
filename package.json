@@ -1,12 +1,14 @@
 {
   "dependencies": {
     "basic-auth-connect": "^1.0.0",
+    "body-parser": "^1.15.2",
     "csv-parse": "^1.1.7",
     "express": "^4.4.1",
     "mongoose": "^4.7.5",
     "multer": "^1.2.1",
     "passport": "^0.2.0",
     "passport-http": "^0.2.2",
+    "pug": "^2.0.0-beta6",
     "socket.io": "1.7.2"
   },
   "devDependencies": {},

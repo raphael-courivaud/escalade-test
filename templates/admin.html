@@ -34,8 +34,8 @@
 
     <body>
 
-            <div id="wrapper">
-    
+        <div id="wrapper">
+        <canvas id="test-canvas" ></canvas>
         <!-- Sidebar -->
         <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
             <div class="brand"><img src="static/images/icon.png" height="50" width="50"></div>
@@ -54,7 +54,7 @@
                     Collège
                 </li>
                 <li class="link girl">
-                    <a onClick="displayCollegeWomen()" href="#">Filles</a>
+                    <a onClick="Admin.displayCollegeWomen()" href="#">Filles</a>
                 </li>
                 <li class="link boy">
                     <a onClick="displayCollegeMen()" href="#">Garçons</a>
@@ -89,6 +89,39 @@
 				<span class="hamb-bottom"></span>
             </button>
             <div id="config">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="title panel-title">Paramètres</h3>
+                        </div>
+                        <div class="body panel-body">
+                            <div class="col-md-12">
+                                <button id="button-test-explosion" type="button" class="btn btn-sm btn-success pull-left">
+                                    <span class="glyphicon glyphicon-certificate"></span> Lancer une explosion
+                                </button>      
+                            </div>   
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="checkbox-inline">
+                                        <label>
+                                            <input type="checkbox"> Option 1
+                                        </label>
+                                    </div>
+                                    <div class="checkbox-inline">
+                                        <label>
+                                            <input type="checkbox"> Option 2
+                                        </label>
+                                    </div>
+                                    <div class="checkbox-inline">
+                                        <label>
+                                            <input type="checkbox"> Option 3
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
                 <div class="col-md-10 col-md-offset-1">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
@@ -155,8 +188,8 @@
                                 </select>
                                 <select class="selectpicker" data-show-subtext="true" data-live-search="true" id="user-picker" title="Elève..">
                                 </select>
-                                <input id="input-seconds" type="text" class="form-control" placeholder="00" maxlength="2" style="width:18px">.<input type="text" maxlength="2" class="form-control" placeholder="00" style="width:18px">
-                                
+                                <input id="input-seconds" type="text" class="form-control" placeholder="00" maxlength="2" style="width:18px">.<input id="input-subseconds" type="text" maxlength="2" class="form-control" placeholder="00" style="width:18px">
+                               
                                 <button id="button-valid" type="button" class="btn btn-sm btn-success">
                                     <span class="glyphicon glyphicon-ok"></span> Valider
                                 </button>
@@ -330,8 +363,9 @@
     <script src="static/js/bootstrap-select.min.js"></script>
     <script src="static/js/material.min.js"></script>
     <script src="static/js/ripples.min.js"></script>
-
     <script src="/static/js/socket.io.js"></script>
+
+    <script src="/static/js/Explosion.js"></script>
     <script src="/static/js/app.js"></script>
     <script src="/static/js/admin.js"></script>
     <script>
