@@ -17,11 +17,12 @@ html { height: 100%;}
     display: none;
 }
 
-canvas {
+#explosion-canvas {
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
+    display: none
 }
 
 /*-------------------------------*/

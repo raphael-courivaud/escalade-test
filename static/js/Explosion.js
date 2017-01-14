@@ -14,6 +14,49 @@ var Explosion = function () {
         explode: explode,
     };
 
+
+	function init(settings)
+	{
+		self.config = settings;
+		// canvas and 2D context initialization
+        $( document ).ready(function() {
+            canvas = document.getElementById(settings.canvasId);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            context2D = canvas.getContext("2d");
+		    context2D.fillStyle = "rgba(0, 0, 0, 0.9)";
+            
+        })
+        return interfaces; 
+    }
+
+    
+    function explode() {
+		$('#' + config.canvasId).show();
+		$('#' + config.canvasId).css('z-index', 1000);
+        var updateInterval = setInterval(function()
+		{
+			update(frameDelay);
+			
+		}, frameDelay);
+
+        var explodeCounter = 0;
+        var refreshIntervalId = setInterval(function() {
+            if(++explodeCounter >= 50) {
+                clearInterval(refreshIntervalId);
+                setTimeout(function(){ clearInterval(updateInterval)}, 1000);
+				$('#' + config.canvasId).css('z-index', 0);
+				$('#' + config.canvasId).hide();
+            }
+            var x = randomFloat(100, canvas.width-100);
+            var y = randomFloat(100, canvas.height-100);
+            
+            createExplosion(x, y, "#525252");
+            createExplosion(x, y, "#FFA318");            
+            createExplosion(x, y, "red");
+        }, 50);      
+    }
+
 	function randomFloat (min, max)
 	{
 		return min + Math.random()*(max-min);
@@ -152,45 +195,6 @@ var Explosion = function () {
 		}
 	}
 	
-	function init(settings)
-	{
-		self.config = settings;
-		// canvas and 2D context initialization
-        $( document ).ready(function() {
-            canvas = document.getElementById(settings.canvasId);
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            context2D = canvas.getContext("2d");
-		    context2D.fillStyle = "rgba(0, 0, 0, 0.9)";
-            
-        })
-        return interfaces; 
-    }
-
-    
-    function explode() {
-		$('#' + config.canvasId).css('z-index', 1000);
-        var updateInterval = setInterval(function()
-		{
-			update(frameDelay);
-			
-		}, frameDelay);
-
-        var explodeCounter = 0;
-        var refreshIntervalId = setInterval(function() {
-            if(++explodeCounter >= 50) {
-                clearInterval(refreshIntervalId);
-                setTimeout(function(){ clearInterval(updateInterval)}, 1000);
-				$('#' + config.canvasId).css('z-index', 0);
-            }
-            var x = randomFloat(100, canvas.width-100);
-            var y = randomFloat(100, canvas.height-100);
-            
-            createExplosion(x, y, "#525252");
-            createExplosion(x, y, "#FFA318");            
-            createExplosion(x, y, "red");
-        }, 50);      
-    }
 
     return interfaces;
 

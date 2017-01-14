@@ -33,8 +33,9 @@
 
     <body>
 
-            <div id="wrapper">
+        <div id="wrapper">
     
+        <canvas id="explosion-canvas" ></canvas>
         <!-- Sidebar -->
         <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
             <div class="brand"><img src="static/images/icon.png" height="50" width="50"></div>
@@ -44,35 +45,35 @@
                     
                 </li>
                 <li class="link all">
-                    <a onClick="displayAll()" href="#">Toutes catégories</a>
+                    <a onClick="App.displayAll()" href="#">Toutes catégories</a>
                 </li>
                 <li class="subtitle">
                     Collège
                 </li>
                 <li class="link girl">
-                    <a onClick="displayCollegeWomen()" href="#">Filles</a>
+                    <a onClick="App.displayCollegeWomen()" href="#">Filles</a>
                 </li>
                 <li class="link boy">
-                    <a onClick="displayCollegeMen()" href="#">Garçons</a>
+                    <a onClick="App.displayCollegeMen()" href="#">Garçons</a>
                 </li>
-                <li class="subtitle">
+                <!--li class="subtitle">
                     Elite
                 </li>
                 <li class="link girl">
-                    <a onClick="displayEliteWomen()" href="#">Filles</a>
+                    <a onClick="App.displayEliteWomen()" href="#">Filles</a>
                 </li>
                 <li class="link boy">
-                    <a onClick="displayEliteMen()" href="#">Garçons</a>
+                    <a onClick="App.displayEliteMen()" href="#">Garçons</a>
                 </li>
                 <li class="subtitle">
                     Aménagée
                 </li>
                 <li class="link girl">
-                    <a onClick="displayCustomWomen()" href="#">Filles</a>
+                    <a onClick="App.displayCustomWomen()" href="#">Filles</a>
                 </li>
                 <li class="link boy">
-                    <a onClick="displayCustomMen()" href="#">Garçons</a>
-                </li>
+                    <a onClick="App.displayCustomMen()" href="#">Garçons</a>
+                </li-->
             </ul>
         </nav>
         <!-- /#sidebar-wrapper -->
@@ -115,7 +116,7 @@
                                     <h3 class="title panel-title">Collège filles</h3>
                                 </div>
                                 <div class="body panel-body">
-                                    <table id="custom-women" class="table table-striped">
+                                    <table id="college-women" class="table table-striped">
                                         <thead>
                                             <tr>
                                                 <th class="col-md-1">#</th>
@@ -251,6 +252,9 @@
     <script src="/static/js/socket.io.js"></script>
     <script src="/static/js/app.js"></script>
     <script>
+
+    App.init();
+
     $(document).ready(function () {
         var trigger = $('.hamburger'),
         isClosed = false;

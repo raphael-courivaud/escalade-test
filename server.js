@@ -55,8 +55,35 @@ app.post("/users", function(req, res){
 app.post("/admin/users/result", function(req, res){
   User.findOne({'_id' : req.body.userId }, function(err, user){
       user.time = req.body.time;
-      user.save(function (err) {if (err) console.log ('Error on save!' + err)});
-      emitCollegeWomen();
+      user.save(function (err) {
+        if (err) console.log ('Error on save!' + err)
+        else {
+          emitAll();
+          switch (user.type){
+           case 'COL': 
+              if(user.category === 'F') {
+                emitCollegeWomen();
+              } else {
+                emitCollegeMen();
+              }
+              break;
+           case 'LYC': 
+              if(user.category === 'F') {
+                //emitLyceeWomen();
+              } else {
+                //emitLyceeMen();
+              }
+              break;
+          }
+        }
+        console.log(user.name + ' saved');
+        User.findOne({time: { $ne: null }, category: user.category}).sort({time : 'asc'}).exec( function(err, minUser) {
+            console.log(user.time);
+            if(minUser && minUser.time >= user.time) {
+              emitExplosion();
+            }
+        });
+      });
       res.sendStatus(200)
   });
 });
@@ -71,13 +98,13 @@ app.get('/admin', function (req, res) {
 
 app.get('/admin/users', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
-      city: String,  User.find({}).sort({'city' : 'asc', 'club' : 'asc', 'team' : 'asc', 'name.last' : 'asc', 'name.first' : 'asc'}).exec(function(err, result) {
-    if (!err) {
-      res.send(JSON.stringify(result));
-    } else {
-      // error handling
-    };
-  });
+    User.find({}).sort({'city' : 'asc', 'club' : 'asc', 'team' : 'asc', 'name.last' : 'asc', 'name.first' : 'asc'}).exec(function(err, result) {
+      if (!err) {
+        res.send(JSON.stringify(result));
+      } else {
+        // error handling
+      };
+    });
 });
 
 var uristring = process.env.MONGODB_URI || 'mongodb://localhost/escalade';
@@ -123,7 +150,7 @@ io.sockets.on('connection', function (socket) {
     });
     
     socket.on('get-college-men', function (user) {
-      socket.emit('college-men', db_users.collegeMen);
+      emitCollegeMen();
     });
     
     socket.on('get-elite-women', function (user) {
@@ -143,14 +170,7 @@ io.sockets.on('connection', function (socket) {
     });
     
     socket.on('get-all', function (user) {
-      /*socket.emit('all', {
-       collegeWomen: db_users.collegeWomen.slice(0, 3), 
-       collegeMen: db_users.collegeMen.slice(0, 3), 
-       eliteWomen: db_users.eliteWomen.slice(0, 3), 
-       eliteMen: db_users.eliteMen.slice(0, 3), 
-       customWomen: db_users.customWomen.slice(0, 3), 
-       customMen: db_users.customMen.slice(0, 3), 
-      });*/
+      emitAll();
     }); 
 });
 
@@ -159,13 +179,14 @@ function loadUsers(data) {
     parse(data, {delimiter: ','}, function(err, output){
       output.forEach(function(user) {
         var excellence = user[8] === 'Oui';
+        var category = user[3].indexOf('F') > -1 ? 'F' : 'M';
         var userObj = {
           licence: user[0],
           name: {
             last: user[1],
             first: user[2]
           },
-          category: user[3],
+          category: category,
           type: user[4],
           club: user[5],
           city: user[6],
@@ -182,9 +203,41 @@ function loadUsers(data) {
 
 
 function emitCollegeWomen() {
-  User.find({}).sort({time : 'asc'}).exec(function(err, result) {
+
+  User.find({time: { $ne: null }, type: 'COL', category: 'F'}).sort({time : 'asc'}).exec(function(err, result) {
     if (!err) {
+      console.log(result.length + ' CollegeWomen users found');
       io.sockets.emit('college-women', result);      
     }
   });
+}
+
+function emitCollegeMen() {
+
+  User.find({time: { $ne: null }, type: 'COL', category: 'M'}).sort({time : 'asc'}).exec(function(err, result) {
+    if (!err) {
+      console.log(result.length + ' CollegeMen users found');
+      io.sockets.emit('college-men', result);      
+    }
+  });
+}
+
+function emitAll() {
+  var data = {};
+  User.find({time: { $ne: null }, type: 'COL', category: 'F'}).sort({time : 'asc'}).limit(3).exec(function(err, result) {
+    if (!err) {
+      data['college-women'] = result;
+      User.find({time: { $ne: null }, type: 'COL', category: 'M'}).sort({time : 'asc'}).limit(3).exec(function(err, result) {
+        if (!err) {
+          data['college-men'] = result;
+          io.sockets.emit('all', data);      
+        }
+      });   
+    }
+  });
+}  
+
+function emitExplosion() {
+  console.log('explosion emited');
+  io.sockets.emit('explosion', null);    
 }

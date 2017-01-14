@@ -16,6 +16,12 @@ var App = function () {
     function init() {
 
         displayAll();
+
+
+        explosion = Explosion.init({canvasId: 'explosion-canvas'});
+        socket.on('explosion', function() {
+            explosion.explode();
+        });
     }
     
     function showContent(){ 
@@ -28,7 +34,7 @@ var App = function () {
 
     function displayAllUsers(data) {
         _.forEach(data, function(value, key) {
-            displayUsers(tableMap[key], value);
+            displayUsers(key, value);
         })
     };
 
@@ -55,6 +61,7 @@ var App = function () {
 
         socket.removeAllListeners();
         socket.on('college-women', function(users) {
+            console.log('college-women ' + users.length + ' updated')
             displayUsers('single-category', users)
         });
         socket.emit('get-college-women');
@@ -66,12 +73,13 @@ var App = function () {
         $('#single-category').show();
         $('#single-category .title').text('Collège garçons');
 
+        socket.removeAllListeners();
         socket.on('college-men', function(users) {
             displayUsers('single-category', users)
         });
         socket.emit('get-college-men');
     }
-
+/*
     function displayEliteWomen() {
         $('#all-categories').hide();
         $('#single-category').show();
@@ -115,7 +123,7 @@ var App = function () {
         });
         socket.emit('get-custom-men');
     }
-
+*/
     function displayAll() {
         $('#single-category').hide();
         $('#all-categories').show();
@@ -126,53 +134,13 @@ var App = function () {
         socket.emit('get-all');
     }
 
-
-    $('#add-button').click(function () {
-        var firstName = $('#first-name').val();  
-            lastName = $('#last-name').val();  
-            bestTime = $('#best-time').val();  
-
-        socket.emit('add-user', {
-            firstName:firstName, 
-            lastName:lastName, 
-            bestTime:bestTime
-            });
-    })
-
-    
-
-    $('form select').change(function(){
-        var ok = true;
-        $('form select, form input').each(function( index ) {
-            if(!$( this ).val()) {
-                ok = false;
-            }
-        });
-        if(ok) {
-            $('#button-valid').show();
-        }
-        
-    });
-
-    $('form input').on('input',function(e){
-        var ok = true;
-        $('form select, form input').each(function( index ) {
-            console.log($( this ).val());
-            if(!$( this ).val()) {
-                ok = false;
-            }
-        });
-        if(ok) {
-            $('#button-valid').show();
-        }
-    });
-
     return {
         init: init,
         showContent: showContent,
         hideContent: hideContent,
         displayAll: displayAll,
-        displayCollegeWomen: displayCollegeWomen
+        displayCollegeWomen: displayCollegeWomen,
+        displayCollegeMen: displayCollegeMen
     };
 
 } ();

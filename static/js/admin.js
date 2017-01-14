@@ -2,44 +2,16 @@
 var Admin = function (App) {
 
     var usersList = [];
-    var testExplosion;
+    var explosion;
 
     function init(){  
         App.init();
-        showConfig();
+        displayAll();
         getUsers();  
        
-        testExplosion = Explosion.init({canvasId: 'test-canvas'});
+        explosion = Explosion.init({canvasId: 'explosion-canvas'});
 
-<<<<<<< HEAD
-        $('#button-upload').click(function (e) {
-
-            var data = new FormData();
-            data.append('usersFile', $('#usersFile')[0].files[0]);
-
-            $.ajax({
-                url: '/users',
-                data: data,
-                cache: false,
-                contentType: false,
-                processData: false,
-                type: 'POST',
-                success: function(data){
-                    getUsers(); 
-                }
-            });
-        });
-
-        $('#input-seconds').bind("input", function() {
-            var $this = $(this);
-            setTimeout(function() {
-                if ( $this.val().length >= parseInt($this.attr("maxlength"),10) )
-                    $this.next("input").focus();
-            },0);
-        });
-=======
         loadEvents();
->>>>>>> d23b6a7b65d0e7498f5866105594aefafd47fc50
     };
 
     function showContent(){ 
@@ -64,6 +36,11 @@ var Admin = function (App) {
         App.displayCollegeWomen();
     }
 
+    function displayCollegeMen() {
+        showContent();
+        App.displayCollegeMen();
+    }
+
     /*-------------------------------------*/
     /*-------------------------------------*/
 
@@ -73,7 +50,7 @@ var Admin = function (App) {
         });
 
         $('#button-test-explosion').click(function() {
-            testExplosion.explode();
+            explosion.explode();
         });
 
         $('#button-upload').click(function (e) {
@@ -94,17 +71,41 @@ var Admin = function (App) {
             });
         });
 
-        $('#club-picker').change(function(){
-            var value = $(this).val();
-            if(!value) {
+        $('#type-picker').change(function(){
+
+            var type = $(this).val();
+            if(type === '') {
                 return;
             }
+            loadClubs(type);
+        });
+
+        $('#club-picker').change(function(){
+            var club = $(this).val();
+            if(club === '') {
+                return;
+            }
+
+            var type = $('#type-picker').val();
+            if(type === '') {
+                return;
+            }
+
             $('#user-picker').empty();
             $('#user-picker').append($("<option></option>").attr("value", '').text(''));
-            _.filter(usersList, {club: value}).forEach(function(user) {
+            _.filter(usersList, {club: club, type: type}).forEach(function(user) {
                 $('#user-picker').append($("<option></option>").attr("value", user._id).text(user.name.first + ' ' + user.name.last));
             });
             $('#user-picker').selectpicker('refresh');
+        });
+
+
+        $('#input-seconds').bind("input", function() {
+            var $this = $(this);
+            setTimeout(function() {
+                if ( $this.val().length >= parseInt($this.attr("maxlength"),10) )
+                    $this.next("input").focus();
+            },0);
         });
     }
 
@@ -138,16 +139,18 @@ var Admin = function (App) {
             return;
         }
 
-        var time = (seconds + (0.01 * subSeconds)) * 1000;
-        $.ajax('/admin/users/result', {
+        var time = (seconds + (0.1 * subSeconds)) * 100;
+        $.ajax({
+            url: '/admin/users/result', 
             data : JSON.stringify({userId: userId, time: time}),
             contentType : 'application/json',
-            type : 'POST'
-        }, function( data ) {
-            $('#user-picker').val('');
-            $('#user-picker').selectpicker('refresh');
-            $('#input-seconds').val(null);
-            $('#input-subseconds').val(null);
+            type : 'POST',
+            success: function() {
+                $('#user-picker').val('');
+                $('#user-picker').selectpicker('refresh');
+                $('#input-seconds').val(null);
+                $('#input-subseconds').val(null);
+            }
         });
     }
 
@@ -155,8 +158,7 @@ var Admin = function (App) {
         $.ajax({
         url: '/admin/users',
             success: function(data){
-                usersList = data;                
-                loadClubs();
+                usersList = data;    
                 displayUsersList(); 
             }
         });            
@@ -188,8 +190,9 @@ var Admin = function (App) {
         $('#users .title').text('Elèves ('+ usersList.length +')');
     };
 
-    function loadClubs() {
-        var clubs = _.uniq(_.pluck(usersList, 'club')).forEach(function(club) {
+    function loadClubs(type) {
+        $('#club-picker option').remove();
+        var clubs = _.uniq(_.pluck(_.filter(usersList, {type: type}), 'club')).forEach(function(club) {
             $('#club-picker').append($("<option></option>").attr("value", club).text(club));
         });
         $('#club-picker').selectpicker('refresh');
@@ -200,6 +203,7 @@ var Admin = function (App) {
         showContent: showContent,
         showConfig: showConfig,
         displayAll: displayAll,
-        displayCollegeWomen: displayCollegeWomen
+        displayCollegeWomen: displayCollegeWomen,
+        displayCollegeMen:displayCollegeMen
     };
 } (App || {});
