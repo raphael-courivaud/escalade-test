@@ -6,8 +6,7 @@ var express = require('express')
   , mongoose = require ("mongoose")
   , basicAuth = require('basic-auth-connect')
   , multer  =   require('multer')
-  , bodyParser = require('body-parser')
-  , async = require('async');
+  , bodyParser = require('body-parser');
 
 var parse = require('csv-parse');
 var auth = basicAuth('admin', 'Vitesse');
