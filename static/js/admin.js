@@ -185,6 +185,7 @@ var Admin = function (App) {
                         '	<td>' + checkValue(user.team) + '</td>'+
                         '	<td><span class="glyphicon glyphicon-'+excellenceIcon+'"></span></td>'+
                         '	<td>' + checkValue(user.time/1000) + '</td>'+
+                        '	<td>' + checkValue(user.score) + '</td>'+
                         '</tr>');
         });
         $('#users .title').text('Elèves ('+ usersList.length +')');

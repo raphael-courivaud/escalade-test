@@ -5,12 +5,15 @@ var App = function () {
     var socket = io(HOST);
 
     var tableMap = {
-        collegeMen: 'college-men',
-        collegeWomen: 'college-women',
-        eliteMen: 'elite-men',
-        eliteWomen: 'elite-women',
-        customMen: 'custom-men',
-        customWomen: 'custom-women',
+        collegeEtabMen: 'college-etab-men',
+        collegeEtabWomen: 'college-etab-women',
+        collegeExcelMen: 'college-excel-men',
+        collegeExcelWomen: 'college-etab-women',
+        lyceeEtabMen: 'lycee-etab-men',
+        lyceeEtabWomen: 'lycee-etab-women',
+        lyceeExcelMen: 'lycee-excel-men',
+        lyceeExcelWomen: 'lycee-etab-women',
+        mixed: 'mixed',
     }
 
     function init() {
@@ -38,6 +41,10 @@ var App = function () {
         })
     };
 
+    function checkValue(value) {
+        return value ? value : '';
+    }
+
     function displayUsers(selector, users) {
 
             var position = 1;
@@ -48,82 +55,128 @@ var App = function () {
             users.forEach(function(user) {
                 list.append('<tr>'+
                             '	<td>' + position++ + '</td>'+
-                            '	<td>' + user.name.last+ ' ' + user.name.first[0]+ '. </td>'+
-                            '	<td>' +  user.time/1000  + '</td>'+
+                            '	<td>' + checkValue(user.name.last)+ ' ' + checkValue(user.name.first[0]) + '. </td>'+
+                            '	<td>' + checkValue(user.time/1000)  + '</td>'+
+                            '	<td>' + checkValue(user.score) + '</td>'+
                         '</tr>');
             });
     }
 
-    function displayCollegeWomen() {
+    function displayCollegeEtabWomen() {
         $('#all-categories').hide();
         $('#single-category').show();
-        $('#single-category .title').text('Collège filles');
+        $('#single-category .title').text('Collège Etablissement filles');
 
         socket.removeAllListeners();
-        socket.on('college-women', function(users) {
-            console.log('college-women ' + users.length + ' updated')
+        socket.on('college-etab-women', function(users) {
+            console.log('college-etab-women ' + users.length + ' updated')
             displayUsers('single-category', users)
         });
-        socket.emit('get-college-women');
+        socket.emit('get-college-etab-women');
 
     }
 
-    function displayCollegeMen() {
+    function displayCollegeEtabMen() {
         $('#all-categories').hide();
         $('#single-category').show();
-        $('#single-category .title').text('Collège garçons');
+        $('#single-category .title').text('Collège Etablissement garçons');
 
         socket.removeAllListeners();
-        socket.on('college-men', function(users) {
+        socket.on('college-etab-men', function(users) {
             displayUsers('single-category', users)
         });
-        socket.emit('get-college-men');
+        socket.emit('get-college-etab-men');
     }
-/*
-    function displayEliteWomen() {
+
+    function displayCollegeExcelWomen() {
         $('#all-categories').hide();
         $('#single-category').show();
-        $('#single-category .title').text('Elite filles');
+        $('#single-category .title').text('Collège Excellence filles');
 
-        socket.on('elite-women', function(users) {
+        socket.removeAllListeners();
+        socket.on('college-excel-women', function(users) {
+            console.log('college-excel-women ' + users.length + ' updated')
             displayUsers('single-category', users)
         });
-        socket.emit('get-elite-women');
+        socket.emit('get-college-excel-women');
+
     }
 
-    function displayEliteMen() {
+    function displayCollegeExcelMen() {
         $('#all-categories').hide();
         $('#single-category').show();
-        $('#single-category .title').text('Elite garçons');
+        $('#single-category .title').text('Collège Excellence garçons');
 
-        socket.on('elite-men', function(users) {
+        socket.removeAllListeners();
+        socket.on('college-excel-men', function(users) {
             displayUsers('single-category', users)
         });
-        socket.emit('get-elite-men');
+        socket.emit('get-college-excel-men');
     }
 
-    function displayCustomWomen() {
+    function displayLyceeEtabWomen() {
         $('#all-categories').hide();
         $('#single-category').show();
-        $('#single-category .title').text('Aménagée filles');
+        $('#single-category .title').text('Lycée Etablissement filles');
 
-        socket.on('custom-men', function(users) {
+        socket.removeAllListeners();
+        socket.on('lycee-etab-women', function(users) {
+            console.log('lycee-etab-women ' + users.length + ' updated')
             displayUsers('single-category', users)
         });
-        socket.emit('get-custom-men');
+        socket.emit('get-lycee-etab-women');
+
     }
 
-    function displayCustomMen() {
+    function displayLyceeEtabMen() {
         $('#all-categories').hide();
         $('#single-category').show();
-        $('#single-category .title').text('Aménagée garçons');
+        $('#single-category .title').text('Lycée Etablissement garçons');
 
-        socket.on('custom-men', function(users) {
+        socket.removeAllListeners();
+        socket.on('lycee-etab-men', function(users) {
             displayUsers('single-category', users)
         });
-        socket.emit('get-custom-men');
+        socket.emit('get-lycee-etab-men');
     }
-*/
+
+    function displayLyceeExcelWomen() {
+        $('#all-categories').hide();
+        $('#single-category').show();
+        $('#single-category .title').text('Lycée Excellence filles');
+
+        socket.removeAllListeners();
+        socket.on('lycee-excel-women', function(users) {
+            console.log('lycee-excel-women ' + users.length + ' updated')
+            displayUsers('single-category', users)
+        });
+        socket.emit('get-lycee-excel-women');
+
+    }
+
+    function displayLyceeExcelMen() {
+        $('#all-categories').hide();
+        $('#single-category').show();
+        $('#single-category .title').text('Lycée Excellence garçons');
+
+        socket.removeAllListeners();
+        socket.on('lycee-excel-men', function(users) {
+            displayUsers('single-category', users)
+        });
+        socket.emit('get-lycee-excel-men');
+    }
+
+    function precessScores(users) {
+        if(users.length === 0) {
+            return;
+        };
+        var bestTime = users[0].time;
+        users.slice(1, users.length).forEach(function(user) {
+            
+        });
+
+    }
+
     function displayAll() {
         $('#single-category').hide();
         $('#all-categories').show();
@@ -139,8 +192,14 @@ var App = function () {
         showContent: showContent,
         hideContent: hideContent,
         displayAll: displayAll,
-        displayCollegeWomen: displayCollegeWomen,
-        displayCollegeMen: displayCollegeMen
+        displayCollegeEtabWomen: displayCollegeEtabWomen,
+        displayCollegeEtabMen: displayCollegeEtabMen,
+        displayCollegeExcelWomen: displayCollegeExcelWomen,
+        displayCollegeExcelMen: displayCollegeExcelMen,
+        displayLyceeEtabWomen: displayLyceeEtabWomen,
+        displayLyceeEtabMen: displayLyceeEtabMen,
+        displayLyceeExcelWomen: displayLyceeExcelWomen,
+        displayLyceeExcelMen: displayLyceeExcelMen
     };
 
 } ();
