@@ -31,14 +31,24 @@ var Admin = function (App) {
         App.displayAll();
     }
 
-    function displayCollegeWomen() {
+    function displayEtabWomen() {
         showContent();
-        App.displayCollegeWomen();
+        App.displayEtabWomen();
     }
 
-    function displayCollegeMen() {
+    function displayEtabMen() {
         showContent();
-        App.displayCollegeMen();
+        App.displayEtabMen();
+    }
+
+    function displayExcelWomen() {
+        showContent();
+        App.displayExcelWomen();
+    }
+
+    function displayExcelMen() {
+        showContent();
+        App.displayExcelMen();
     }
 
     /*-------------------------------------*/
@@ -71,15 +81,6 @@ var Admin = function (App) {
             });
         });
 
-        $('#type-picker').change(function(){
-
-            var type = $(this).val();
-            if(type === '') {
-                return;
-            }
-            loadClubs(type);
-        });
-
         $('#club-picker').change(function(){
             var club = $(this).val();
             if(club === '') {
@@ -93,7 +94,7 @@ var Admin = function (App) {
 
             $('#user-picker').empty();
             $('#user-picker').append($("<option></option>").attr("value", '').text(''));
-            _.filter(usersList, {club: club, type: type}).forEach(function(user) {
+            _.filter(usersList, {club: club}).forEach(function(user) {
                 $('#user-picker').append($("<option></option>").attr("value", user._id).text(user.name.first + ' ' + user.name.last));
             });
             $('#user-picker').selectpicker('refresh');
@@ -159,7 +160,8 @@ var Admin = function (App) {
         url: '/admin/users',
             success: function(data){
                 usersList = data;    
-                displayUsersList(); 
+                displayUsersList();
+                loadClubs(); 
             }
         });            
     }
@@ -179,13 +181,11 @@ var Admin = function (App) {
                         '	<td>' + checkValue(user.name.last) + '</td>'+
                         '	<td>' + checkValue(user.name.first) + '</td>'+
                         '	<td>' + checkValue(user.category) + '</td>'+
-                        '	<td>' + checkValue(user.type) + '</td>'+
                         '	<td>' + checkValue(user.club) + '</td>'+
                         '	<td>' + checkValue(user.city) + '</td>'+
                         '	<td>' + checkValue(user.team) + '</td>'+
                         '	<td><span class="glyphicon glyphicon-'+excellenceIcon+'"></span></td>'+
                         '	<td>' + checkValue(user.time/1000) + '</td>'+
-                        '	<td>' + checkValue(user.score) + '</td>'+
                         '</tr>');
         });
         $('#users .title').text('Elèves ('+ usersList.length +')');
@@ -193,7 +193,7 @@ var Admin = function (App) {
 
     function loadClubs(type) {
         $('#club-picker option').remove();
-        var clubs = _.uniq(_.pluck(_.filter(usersList, {type: type}), 'club')).forEach(function(club) {
+        var clubs = _.uniq(_.pluck(_.filter(usersList), 'club')).sort().forEach(function(club) {
             $('#club-picker').append($("<option></option>").attr("value", club).text(club));
         });
         $('#club-picker').selectpicker('refresh');
@@ -204,7 +204,9 @@ var Admin = function (App) {
         showContent: showContent,
         showConfig: showConfig,
         displayAll: displayAll,
-        displayCollegeWomen: displayCollegeWomen,
-        displayCollegeMen:displayCollegeMen
+        displayEtabWomen: displayEtabWomen,
+        displayEtabMen: displayEtabMen,
+        displayExcelWomen: displayExcelWomen,
+        displayExcelMen: displayExcelMen
     };
 } (App || {});

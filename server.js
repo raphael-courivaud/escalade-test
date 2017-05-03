@@ -23,7 +23,6 @@ var userSchema = new mongoose.Schema({
         last: String
       },
       category: String,
-      type: String,
       club: String,
       city: String,
       team: Number,
@@ -55,7 +54,7 @@ server.listen(port, function() {
 });
 
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/templates/index.material.html');
+  res.sendFile(__dirname + '/templates/index.html');
 });
 
 app.get('/admin', auth, function (req, res) {
@@ -98,7 +97,7 @@ app.post("/admin/users/result", function(req, res){
               }
           });*/
 
-          notify(user.type, user.excellence, user.category);
+          notify(user.excellence, user.category);
         }
       });
       res.sendStatus(200)
@@ -128,38 +127,22 @@ app.get('/admin/users', function (req, res) {
 io.sockets.on('connection', function (socket) {
 
         
-    socket.on('get-college-etab-women', function (user) {
-      emitCollegeEtabWomen();
+    socket.on('get-etab-women', function (user) {
+      emitEtabWomen();
     });
     
-    socket.on('get-college-etab-men', function (user) {
-      emitCollegeEtabMen();
+    socket.on('get-etab-men', function (user) {
+      emitEtabMen();
     });
         
-    socket.on('get-college-excel-women', function (user) {
-      emitCollegeExcelWomen();
+    socket.on('get-excel-women', function (user) {
+      emitExcelWomen();
     });
     
-    socket.on('get-college-excel-men', function (user) {
-      emitCollegeExcelMen();
+    socket.on('get-excel-men', function (user) {
+      emitExcelMen();
     });
-        
-    socket.on('get-lycee-etab-women', function (user) {
-      emitLyceeEtabWomen();
-    });
-    
-    socket.on('get-lycee-etab-men', function (user) {
-      emitLyceeEtabMen();
-    });
-        
-    socket.on('get-lycee-excel-women', function (user) {
-      emitLyceeExcelWomen();
-    });
-    
-    socket.on('get-lycee-excel-men', function (user) {
-      emitLyceeExcelMen();
-    });
-    
+            
     socket.on('get-mixed', function (user) {
       emitMixed();
     });
@@ -182,9 +165,8 @@ function loadUsers(data) {
             first: user[2]
           },
           category: category,
-          type: user[4],
-          club: user[5]+ ' ' + user[7],
-          city: user[6],
+          club: user[6],
+          city: user[5],
           team: user[7],
           excellence: excellence,
           time: null
@@ -197,152 +179,91 @@ function loadUsers(data) {
 };
 
 
-function emitCollegeEtabWomen() {
+function emitEtabWomen() {
 
-  User.find({time: { $ne: null }, type: 'COL', category: 'F', excellence: false}).sort({time : 'asc'}).exec(function(err, result) {
+  User.find({time: { $ne: null }, category: 'F', excellence: false}).sort({time : 'asc'}).exec(function(err, result) {
     if (!err) {
-      console.log(result.length + ' CollegeEtabWomen users found');
-      io.sockets.emit('college-etab-women', result);      
+      console.log(result.length + ' EtabWomen users found');
+      io.sockets.emit('etab-women', result);      
     }
   });
 }
 
-function emitCollegeEtabMen() {
+function emitEtabMen() {
 
-  User.find({time: { $ne: null }, type: 'COL', category: 'M', excellence: false}).sort({time : 'asc'}).exec(function(err, result) {
+  User.find({time: { $ne: null }, category: 'M', excellence: false}).sort({time : 'asc'}).exec(function(err, result) {
     if (!err) {
-      console.log(result.length + ' CollegeEtabMen users found');
-      io.sockets.emit('college-etab-men', result);      
-    }
-  });
-}
-
-
-function emitCollegeExcelWomen() {
-
-  User.find({time: { $ne: null }, type: 'COL', category: 'F', excellence: true}).sort({time : 'asc'}).exec(function(err, result) {
-    if (!err) {
-      console.log(result.length + ' CollegeExcelWomen users found');
-      io.sockets.emit('college-excel-women', result);      
-    }
-  });
-}
-
-function emitCollegeExcelMen() {
-
-  User.find({time: { $ne: null }, type: 'COL', category: 'M', excellence: true}).sort({time : 'asc'}).exec(function(err, result) {
-    if (!err) {
-      console.log(result.length + ' CollegeExcelMen users found');
-      io.sockets.emit('college-excel-men', result);      
+      console.log(result.length + ' EtabMen users found');
+      io.sockets.emit('etab-men', result);      
     }
   });
 }
 
 
-function emitLyceeEtabWomen() {
+function emitExcelWomen() {
 
-  User.find({time: { $ne: null }, type: 'LYC', category: 'F', excellence: false}).sort({time : 'asc'}).exec(function(err, result) {
+  User.find({time: { $ne: null }, category: 'F', excellence: true}).sort({time : 'asc'}).exec(function(err, result) {
     if (!err) {
-      console.log(result.length + ' LyceeEtabWomen users found');
-      io.sockets.emit('lycee-etab-women', result);      
+      console.log(result.length + ' ExcelWomen users found');
+      io.sockets.emit('excel-women', result);      
     }
   });
 }
 
-function emitLyceeEtabMen() {
+function emitExcelMen() {
 
-  User.find({time: { $ne: null }, type: 'LYC', category: 'M', excellence: false}).sort({time : 'asc'}).exec(function(err, result) {
+  User.find({time: { $ne: null }, category: 'M', excellence: true}).sort({time : 'asc'}).exec(function(err, result) {
     if (!err) {
-      console.log(result.length + ' LyceeEtabMen users found');
-      io.sockets.emit('lycee-etab-men', result);      
-    }
-  });
-}
-
-
-function emitLyceeExcelWomen() {
-
-  User.find({time: { $ne: null }, type: 'LYC', category: 'F', excellence: true}).sort({time : 'asc'}).exec(function(err, result) {
-    if (!err) {
-      console.log(result.length + ' LyceeExcelWomen users found');
-      io.sockets.emit('lycee-excel-women', result);      
-    }
-  });
-}
-
-function emitLyceeExcelMen() {
-
-  User.find({time: { $ne: null }, type: 'LYC', category: 'M', excellence: true}).sort({time : 'asc'}).exec(function(err, result) {
-    if (!err) {
-      console.log(result.length + ' LyceeExcelMen users found');
-      io.sockets.emit('lycee-excel-men', result);      
-    }
-  });
-}
-
-function emitMixed() {
-
-  User.find({time: { $ne: null }, type: 'LYC', category: 'M', excellence: true}).sort({time : 'asc'}).exec(function(err, result) {
-    if (!err) {
-      console.log(result.length + ' LyceeExcelMen users found');
-      io.sockets.emit('lycee-excel-men', result);      
+      console.log(result.length + ' ExcelMen users found');
+      io.sockets.emit('excel-men', result);      
     }
   });
 }
 
 function emitAll() {
+  var limit = 5;
   var data = {};
-  User.find({time: { $ne: null }, type: 'COL', category: 'F', excellence: false}).sort({time : 'asc'}).limit(3).exec(function(err, result) {
+  User.find({time: { $ne: null }, category: 'F', excellence: false}).sort({time : 'asc'}).limit(limit).exec(function(err, result) {
     if (!err) {
-      data['college-etab-women'] = result;
-      User.find({time: { $ne: null }, type: 'COL', category: 'M', excellence: false}).sort({time : 'asc'}).limit(3).exec(function(err, result) {
-        if (!err) {
-          data['college-etab-men'] = result;
-          User.find({time: { $ne: null }, type: 'COL', category: 'F', excellence: true}).sort({time : 'asc'}).limit(3).exec(function(err, result) {
-            if (!err) {
-              data['college-excel-women'] = result;   
-              User.find({time: { $ne: null }, type: 'COL', category: 'M', excellence: true}).sort({time : 'asc'}).limit(3).exec(function(err, result) {
-                if (!err) {
-                  data['college-excel-men'] = result;  
-                  User.find({time: { $ne: null }, type: 'LYC', category: 'F', excellence: false}).sort({time : 'asc'}).limit(3).exec(function(err, result) {
-                    if (!err) {
-                      data['lycee-etab-women'] = result;
-                      User.find({time: { $ne: null }, type: 'LYC', category: 'M', excellence: false}).sort({time : 'asc'}).limit(3).exec(function(err, result) {
-                        if (!err) {
-                          data['lycee-etab-men'] = result;
-                          User.find({time: { $ne: null }, type: 'LYC', category: 'F', excellence: true}).sort({time : 'asc'}).limit(3).exec(function(err, result) {
-                            if (!err) {
-                              data['lycee-excel-women'] = result;   
-                              User.find({time: { $ne: null }, type: 'LYC', category: 'M', excellence: true}).sort({time : 'asc'}).limit(3).exec(function(err, result) {
-                                if (!err) {
-                                  data['lycee-excel-men'] = result;  
-                                  io.sockets.emit('all', data);  
-                                }
-                              });  
-                            }
-                          });       
-                        }
-                      });   
-                    }
-                  });  
-                }
-              });  
-            }
-          });       
-        }
-      });   
+      data['etab-women'] = result;  
     }
+  })
+  .then(function() {
+    return User.find({time: { $ne: null }, category: 'M', excellence: false}).sort({time : 'asc'}).limit(limit).exec(function(err, result) {
+      if (!err) {
+        data['etab-men'] = result;
+            
+      }
+    }); 
+  })
+  .then(function() {
+    return User.find({time: { $ne: null }, category: 'F', excellence: true}).sort({time : 'asc'}).limit(limit).exec(function(err, result) {
+      if (!err) {
+        data['excel-women'] = result;             
+      }
+    })
+  })
+  .then(function() {
+    return User.find({time: { $ne: null }, category: 'M', excellence: true}).sort({time : 'asc'}).limit(limit).exec(function(err, result) {
+      if (!err) {
+        data['excel-men'] = result;                           
+      }
+    })
+  })
+  .then(function() {
+        io.sockets.emit('all', data); 
   }); 
 }  
+
 
 function emitExplosion() {
   console.log('explosion emited');
   //io.sockets.emit('explosion', null);    
 }
 
-function updateAllScores(type, excellence, category) {
+function updateAllScores(excellence, category) {
   console.log('updateAllScores')
-  User.find({time: { $ne: null }, type: type, category: category, excellence: excellence}).sort({time : 'asc'}).exec(function(err, users) {
+  User.find({time: { $ne: null }, category: category, excellence: excellence}).sort({time : 'asc'}).exec(function(err, users) {
     if (!err) {          
       if(users.length === 0) {
           return;
@@ -359,7 +280,7 @@ function updateAllScores(type, excellence, category) {
 
             console.log('test 2')
             if (!err) {
-              notify(type, excellence, category);
+              notify(excellence, category);
             }
         });
       });         
@@ -379,39 +300,20 @@ function updateUserScore(minUser, user) {
   return user.save();
 }
 
-function notify(type, excellence, category) {
+function notify(excellence, category) {
     console.log('notified')
     emitAll();
-    switch (type){
-      case 'COL': 
-        if(category === 'F') {
-          if(excellence) {
-            emitCollegeExcelWomen();
-          } else {
-            emitCollegeEtabWomen();
-          }
-        } else {
-          if(excellence) {
-            emitCollegeExcelMen();
-          } else {
-            emitCollegeEtabMen();
-          }
-        }
-        break;
-      case 'LYC': 
-        if(category === 'F') {
-          if(excellence) {
-            emitLyceeExcelWomen();
-          } else {
-            emitLyceeEtabWomen();
-          }
-        } else {
-          if(excellence) {
-            emitLyceeExcelMen();
-          } else {
-            emitLyceeEtabMen();
-          }
-        }
-        break;
-    }
+    if(category === 'F') {
+      if(excellence) {
+        emitExcelWomen();
+      } else {
+        emitEtabWomen();
+      }
+    } else {
+      if(excellence) {
+        emitExcelMen();
+      } else {
+        emitEtabMen();
+      }
+    }        
 }
