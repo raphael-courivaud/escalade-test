@@ -156,7 +156,7 @@ function loadUsers(data) {
   User.remove({}, function(err) { 
     parse(data, {delimiter: ','}, function(err, output){
       output.forEach(function(user) {
-        var excellence = user[8] === 'Oui';
+        var excellence = user[7] === 'Oui';
         var category = user[3].indexOf('F') > -1 ? 'F' : 'M';
         var userObj = {
           licence: user[0],
@@ -165,9 +165,9 @@ function loadUsers(data) {
             first: user[2]
           },
           category: category,
-          club: user[6],
+          club: user[4],
           city: user[5],
-          team: user[7],
+          team: user[6],
           excellence: excellence,
           time: null
         }
