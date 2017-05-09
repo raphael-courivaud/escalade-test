@@ -123,6 +123,37 @@ app.get('/admin/users', function (req, res) {
     });
 });
 
+app.delete('/admin/users/:userId/reset', function (req, res) {
+  var userId = req.params.userId;
+  User.findById(userId, function(err, user) {
+    user.score = null;
+    user.save(function (err) {
+        if (err) console.log ('Error on save!' + err)
+        else {
+          notify(user.excellence,user.category);
+        }
+    });
+  });
+});
+
+app.delete('/admin/users/reset', function (req, res) {
+  User.find(function(err, user) {
+    user.score = null;
+    user.save(function (err) {
+        if (err) console.log ('Error on save!' + err)
+        else {
+          notify(user.excellence,user.category);
+        }
+    });
+  })
+  .then(function() {
+    notify(false, 'F');
+    notify(false, 'G');
+    notify(true, 'F');
+    notify(true, 'G');
+  });
+});
+
 //Socket.io emits this event when a connection is made.
 io.sockets.on('connection', function (socket) {
 

@@ -11,6 +11,8 @@ var Admin = function (App) {
        
         explosion = Explosion.init({canvasId: 'explosion-canvas'});
 
+        
+        $('#modal').modal();
         loadEvents();
     };
 
@@ -61,6 +63,23 @@ var Admin = function (App) {
 
         $('#button-test-explosion').click(function() {
             explosion.explode();
+        });
+
+        $('#button-reset-all').click(function() {
+            $('#confirm-delete').modal('show'); 
+        });
+
+        $('#reset-all-confirmed').click(function() {
+            resetScores(function() {
+                $('#users .score').text('');
+            });
+        });
+
+        $('.remove-action').click(function() {
+            var userId = $(this).data('id');
+            resetScore(userId, function() {
+                $(this).parent().find('.score').text('');
+            });
         });
 
         $('#button-upload').click(function (e) {
@@ -185,8 +204,9 @@ var Admin = function (App) {
                         '	<td>' + checkValue(user.city) + '</td>'+
                         '	<td>' + checkValue(user.team) + '</td>'+
                         '	<td><span class="glyphicon glyphicon-'+excellenceIcon+'"></span></td>'+
-                        '	<td>' + checkValue(user.time/1000) + '</td>'+
-                        '</tr>');
+                        '	<td class="score">' + checkValue(Number((user.time/1000).toFixed(2))) + '</td>'+
+                        '	<td><a><span class="glyphicon glyphicon-remove remove-action" aria-hidden="true" data-id="'+ user._id +'"></span></a></td>'+
+                        '</tr>');                        
         });
         $('#users .title').text('Elèves ('+ usersList.length +')');
     };
@@ -197,6 +217,24 @@ var Admin = function (App) {
             $('#club-picker').append($("<option></option>").attr("value", club).text(club));
         });
         $('#club-picker').selectpicker('refresh');
+    }
+
+    function resetScore(userId, onSuccess) {
+        $.ajax({
+            url: '/admin/users/'+ userId +'/reset', 
+            contentType : 'application/json',
+            type : 'DELETE',
+            success: onSuccess
+        });
+    }
+
+    function resetScores(onSuccess) {
+        $.ajax({
+            url: '/admin/users/reset', 
+            contentType : 'application/json',
+            type : 'DELETE',
+            success: onSuccess
+        });
     }
 
     return {

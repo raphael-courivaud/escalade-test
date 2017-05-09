@@ -25,6 +25,26 @@ html { height: 100%;}
     display: none
 }
 
+#edit .form-group .form-control, #edit .btn-success {
+    margin-bottom: 0;
+}
+#edit .form-group .form-control {
+    padding-bottom: 0;
+    margin-top: 0;
+}
+
+.modal-header {
+    background-color: #f44336;
+    color: white;
+    padding: 17px !important;
+    font-size: 17px !important;
+}
+
+#button-reset-all {
+    margin: 0;
+    padding-bottom: 0px;
+}
+
 /*-------------------------------*/
 /*           Wrappers            */
 /*-------------------------------*/
