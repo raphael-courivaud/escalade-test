@@ -23,6 +23,7 @@ var Admin = function (App) {
     };
 
     function showConfig(){  
+        getUsers();  
         $('#config').show();
         $('#edit').hide();  
         App.hideContent(); 
@@ -72,13 +73,6 @@ var Admin = function (App) {
         $('#reset-all-confirmed').click(function() {
             resetScores(function() {
                 $('#users .score').text('');
-            });
-        });
-
-        $('.remove-action').click(function() {
-            var userId = $(this).data('id');
-            resetScore(userId, function() {
-                $(this).parent().find('.score').text('');
             });
         });
 
@@ -205,9 +199,24 @@ var Admin = function (App) {
                         '	<td>' + checkValue(user.team) + '</td>'+
                         '	<td><span class="glyphicon glyphicon-'+excellenceIcon+'"></span></td>'+
                         '	<td class="score">' + checkValue(Number((user.time/1000).toFixed(2))) + '</td>'+
-                        '	<td><a><span class="glyphicon glyphicon-remove remove-action" aria-hidden="true" data-id="'+ user._id +'"></span></a></td>'+
+                        '	<td><span class="actions"> '+
+                        '           <button data-id="'+ user._id +'" type="button" class="btn btn-sm btn-warning remove-action">'+
+                        '               <span class="glyphicon glyphicon-remove "></span></a>'+
+                        '           </button>' +
+                        '       </span>'+
+                        '   </td>'+
                         '</tr>');                        
         });
+
+
+        $('.actions .remove-action').click(function() {
+            var button = $(this);
+            var userId = button.data('id');
+            resetScore(userId, function() {
+                button.parent().parent().parent().find('.score').text('');
+            });
+        });
+
         $('#users .title').text('Elèves ('+ usersList.length +')');
     };
 

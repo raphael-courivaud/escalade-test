@@ -125,25 +125,27 @@ app.get('/admin/users', function (req, res) {
 
 app.delete('/admin/users/:userId/reset', function (req, res) {
   var userId = req.params.userId;
-  User.findById(userId, function(err, user) {
-    user.score = null;
-    user.save(function (err) {
+
+  User.findOne({'_id' : userId }, function(err, user){
+      user.time = null;
+      user.save(function (err) {
         if (err) console.log ('Error on save!' + err)
         else {
-          notify(user.excellence,user.category);
+          notify(user.excellence, user.category);
         }
-    });
+      });
+      res.sendStatus(200)
   });
 });
 
 app.delete('/admin/users/reset', function (req, res) {
-  User.find(function(err, user) {
-    user.score = null;
-    user.save(function (err) {
+  User.find(function(err, users) {
+    users.forEach(user => {
+      user.time = null;
+      user.save(function (err) {
         if (err) console.log ('Error on save!' + err)
-        else {
-          notify(user.excellence,user.category);
-        }
+        else {}
+      });
     });
   })
   .then(function() {
@@ -151,6 +153,9 @@ app.delete('/admin/users/reset', function (req, res) {
     notify(false, 'G');
     notify(true, 'F');
     notify(true, 'G');
+  })
+  .then(function(){
+    res.sendStatus(200);
   });
 });
 

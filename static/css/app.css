@@ -28,6 +28,8 @@ html { height: 100%;}
 #edit .form-group .form-control, #edit .btn-success {
     margin-bottom: 0;
 }
+
+
 #edit .form-group .form-control {
     padding-bottom: 0;
     margin-top: 0;
@@ -40,10 +42,24 @@ html { height: 100%;}
     font-size: 17px !important;
 }
 
-#button-reset-all {
-    margin: 0;
-    padding-bottom: 0px;
+#users tbody tr .actions {
+    display: none;
 }
+
+#config .btn {
+    padding: 5px;
+    margin: 0;
+} 
+
+#config tr .btn {
+    padding: 0;
+} 
+
+#users tbody tr:hover .actions {
+    display: block;
+}
+
+
 
 /*-------------------------------*/
 /*           Wrappers            */
