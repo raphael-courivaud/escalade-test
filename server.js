@@ -138,6 +138,14 @@ app.delete('/admin/users/:userId/reset', function (req, res) {
   });
 });
 
+app.delete('/admin/users/:userId', function (req, res) {
+  var userId = req.params.userId;
+
+  User.remove({'_id' : userId }, function(err, user){
+      res.sendStatus(200)
+  });
+});
+
 app.delete('/admin/users/reset', function (req, res) {
   User.find(function(err, users) {
     users.forEach(function(user) {

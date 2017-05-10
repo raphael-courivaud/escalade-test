@@ -67,7 +67,7 @@ var Admin = function (App) {
         });
 
         $('#button-reset-all').click(function() {
-            $('#confirm-delete').modal('show'); 
+            $('#confirm-reset').modal('show'); 
         });
 
         $('#reset-all-confirmed').click(function() {
@@ -75,6 +75,13 @@ var Admin = function (App) {
                 $('#users .score').text('');
             });
         });
+
+        $('#remove-confirmed').click(function() {
+            removeUser(removeClicked.data('id'), function() {
+                removeClicked.parent().parent().parent().remove();
+            });
+        });
+            
 
         $('#button-upload').click(function (e) {
 
@@ -200,7 +207,10 @@ var Admin = function (App) {
                         '	<td><span class="glyphicon glyphicon-'+excellenceIcon+'"></span></td>'+
                         '	<td class="score">' + checkValue(Number((user.time/1000).toFixed(2))) + '</td>'+
                         '	<td><span class="actions"> '+
-                        '           <button data-id="'+ user._id +'" type="button" class="btn btn-sm btn-warning remove-action">'+
+                        '           <button data-id="'+ user._id +'" type="button" class="btn btn-sm btn-warning reset-action">'+
+                        '               <span class="glyphicon glyphicon-repeat "></span></a>'+
+                        '           </button>' +
+                        '           <button data-id="'+ user._id +'" data-name="'+ user.name.first+' '+user.name.last +'" type="button" class="btn btn-sm btn-danger remove-action">'+
                         '               <span class="glyphicon glyphicon-remove "></span></a>'+
                         '           </button>' +
                         '       </span>'+
@@ -209,12 +219,18 @@ var Admin = function (App) {
         });
 
 
-        $('.actions .remove-action').click(function() {
+        $('.actions .reset-action').click(function() {
             var button = $(this);
             var userId = button.data('id');
             resetScore(userId, function() {
                 button.parent().parent().parent().find('.score').text('');
             });
+        });
+
+        $('.actions .remove-action').click(function() {
+            removeClicked = $(this);
+            $('#confirm-remove .modal-body').empty().append('Êtes vous sûr de vouloir supprimer <b>'+ removeClicked.data('name') +'</b> de la liste ?'); 
+            $('#confirm-remove').modal('show'); 
         });
 
         $('#users .title').text('Elèves ('+ usersList.length +')');
@@ -231,6 +247,15 @@ var Admin = function (App) {
     function resetScore(userId, onSuccess) {
         $.ajax({
             url: '/admin/users/'+ userId +'/reset', 
+            contentType : 'application/json',
+            type : 'DELETE',
+            success: onSuccess
+        });
+    }
+
+    function removeUser(userId, onSuccess) {
+        $.ajax({
+            url: '/admin/users/'+ userId, 
             contentType : 'application/json',
             type : 'DELETE',
             success: onSuccess
