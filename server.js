@@ -140,7 +140,7 @@ app.delete('/admin/users/:userId/reset', function (req, res) {
 
 app.delete('/admin/users/reset', function (req, res) {
   User.find(function(err, users) {
-    users.forEach(user => {
+    users.forEach(function(user) {
       user.time = null;
       user.save(function (err) {
         if (err) console.log ('Error on save!' + err)
